@@ -1,0 +1,48 @@
+@CHARSET "UTF-8";
+
+@import url(//fonts.googleapis.com/earlyaccess/nanumgothic.css);
+
+.cscenter{/* 전체 클래스 폰트 -나눔고딕 */
+	font-family: 'Nanum Gothic', sans-serif;
+	max-width: 1920px;
+	margin: 60px auto 120px auto;
+}
+.sub_wrap{
+	margin: 0 auto;
+	min-width: 500px; 
+	/* background-color: pink; */
+	width: 1180px;
+}
+.sub_visual{
+	position: relative;
+	min-width: 1170px;
+}
+.img_txt{
+	position: absolute;
+	top: 45%;
+	right: 20%;
+	text-align: right;
+	font-size: 19px;
+	line-height: 30px;
+}
+.notice{
+	width: 100%;
+	/* height: 708px; */
+	height: 100%;
+	background-color: beige;
+	border-top: 2px solid black;
+}
+
+#title{
+	width: 90%;
+}
+
+#contents{
+	width: 90%;
+	height: 50%;
+}
+
+
+.btn{
+	display: inline-block;
+}

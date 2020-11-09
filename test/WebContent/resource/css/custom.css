@@ -1,0 +1,24 @@
+@import url(http://fonts.googleapis.com/earlyaccess/nanumgothic.css);
+@import url(http://fonts.googleapis.com/earlyaccess/hanna.css);
+
+* {
+	font-family : 'Nanum Gothic';
+}
+
+h1 {
+	font-family : 'Hanna';
+}
+
+.notice th {
+	text-align: center;
+}
+
+.th_title{
+	width: 80%;
+}
+.th_date{
+	width: 20%;
+}
+th, td {
+	height: 30px;
+}
