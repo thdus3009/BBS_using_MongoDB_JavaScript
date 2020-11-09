@@ -39,9 +39,10 @@ ul.mylist li{
 	<div class="sub_wrap"><!-- css때문에 잡아놓은 div -->
 		<h2>공지 게시판</h2>
 		
-		<div id="one_page_bbs"><!-- 원페이지 작동 구간 (목록) -->
+		<!------------------ 원페이지 작동 구간 (목록) ----------------------->
+		<div id="one_page_bbs">
 			
-			<div class="notice">
+			<div class="notice1">
 				<table class="table-striped" style="text-align:center; border:1px solid #dddddd; width: 100%;">
 					<thead>
 						<tr>
@@ -56,19 +57,60 @@ ul.mylist li{
 			</div>
 			
 			<br>
-			<a href="write.jsp" class="btn">글쓰기</a>
+			<div onclick="write11()" class="btn">글쓰기</div>
+			<!-- <a href="write.jsp" class="btn">글쓰기</a> -->
 		
 			<!-- 페이지 -->
 			<div id="paging"></div>		
 		
 		</div>
 		
-	
-		<div id="one_page_view"><!-- 선택한 글보기 -->
-			ㅇㅇㅇ
+		<!------------------------ 선택한 글보기 -------------------------->
+		<div id="one_page_view">
+			<div class="notice2">
+				<!-- //내용출력 -->
+			</div>
+			
+			<br>
+			<a href="/" class="btn">목록</a>
+			<div onclick="delete11()" class="btn">삭제</div>
+			<div onclick="update11()" class="btn">수정</div>
 		</div>
-		<div id="one_page_write"><!-- 글쓰기 -->
-			ㅇㅇㅇ
+		
+		
+		<!------------------------ 글쓰기 --------------------------------->
+		<div id="one_page_write">			
+			<div class="notice3">
+				<br>
+				제목 : <input type="text" name="title" id="title">
+				<br><br>
+				내용 : <textarea rows="5" cols="22" name="contents" id="contents"></textarea>
+				<!-- <input type="submit" value="저장"> -->
+				<br><br>
+				<button onclick="write_save()" >저장</button>
+			
+			</div>
+			
+			<a href="/" class="btn">목록</a>
+		</div>
+		
+		
+		<!------------------------ 수정 --------------------------------->
+		<div id="one_page_update">
+			<div class="notice4">
+				<br>
+				제목 : <input type="text" id="up_title">
+				<br><br>
+				날짜 : <input type="text" id="up_date" readonly="readonly">
+				<br><br>
+				내용 : <textarea rows="5" cols="22" id="up_contents"></textarea>
+				<!-- <input type="submit" value="저장"> -->
+				<br><br>
+				<button onclick="update_save()" >저장</button>
+			
+			</div>
+			
+			<a href="/" class="btn">목록</a>
 		</div>
 
 	</div>
@@ -85,6 +127,7 @@ $().ready(function(){
 	$('#one_page_bbs').show();
 	$('#one_page_write').hide();
 	$('#one_page_view').hide();
+	$('#one_page_update').hide();
 	
 	var url = "/loadAll.mon";
 	$.ajax({
@@ -129,16 +172,195 @@ $().ready(function(){
 
 });
 
-//클릭했을때
-function open11(key){
-	var key = key;
-	//console.log(key); //해당 "_id" 값
+//view(상세보기)클릭했을때의 해당 key(_id)값 과 json형태
+var key;
+var data;
 
-	window.location.href = "/view.jsp?id="+key;
+//클릭했을때
+function open11(id){
+	$('#one_page_bbs').hide();
+	$('#one_page_write').hide();
+	$('#one_page_view').show();
+	$('#one_page_update').hide();
+	
+	key = id;
+	data= JSON.stringify({ // JSON.stringify : json 객체를 String 객체로 변환
+		"key" : key
+	})
+	//console.log(key); //해당 "_id" 값
+	//window.location.href = "/view.jsp?id="+key;
+	url="/load.mon";		
+	
+	$.ajax({
+		type: "POST",
+		dataType: "json",
+		contentType: "application/json; charset=utf-8",	
+		data: data,
+		url: url,
+		success: function(res){
+	
+			var html ="";
+			html+= "<br>";
+			html+= "제목 : <span id=\"title\">"+res.title+"</span>";
+			html+= "<br><br>";
+			html+= "날짜 : <span id=\"date\">"+res.date+"</span>";
+			html+= "<br><br>";
+			html+= "내용 : <span id=\"contents\">"+res.contents+"</span>";
+			html+= "<br><br>";
+
+			$(".notice2").html(html); 
+		},
+		error: function(e){
+			alert("ERROR(view) : "+ e);
+		}
+			
+	});
 	
 }
 
+//수정
+function update11(){
+/* 	console.log(key);
+	console.log(data); */
+	
+	$('#one_page_bbs').hide();
+	$('#one_page_write').hide();
+	$('#one_page_view').hide();
+	$('#one_page_update').show();
+
+	$.ajax({
+		type: "POST",
+		dataType: "json",
+		contentType: "application/json; charset=utf-8",	
+		data: data,
+		url: url,
+		success: function(res){
+			//console.log(res);
+	 		$('#up_title').val(res.title);
+			$('#up_date').val(res.date);
+			$('#up_contents').val(res.contents);			
+
+		},
+		error: function(e){
+			alert("ERROR(update) : "+ e);
+		}
+			
+	});
+}
+
+function update_save(){
+	//alert("확인: "+key);
+	var title = $("#up_title").val();
+	var contents = $("#up_contents").val();
+
+	//alert("title: "+title+" content: "+contents);
+	
+	var url = "/update11.mon";
+	var data = JSON.stringify({
+		"key" : key,	
+		"title" : title,
+		"contents" : contents
+	}) 
+	
+	$.ajax({
+		type: "POST",
+		dataType: "json",
+		contentType: "application/json; charset=utf-8",
+		data: data,
+		url: url,
+		success: function(res){
+			if (res.result == "OK"){
+				alert("수정이 완료되었습니다.");
+				//location.href = "/view.jsp?id="+key;
+				location.href = "/";
+			}else{
+				alert("저장 에러");
+			}
+		},
+		error: function(e){
+			alert("ERROR : "+e);
+		}
+	});  
+}
+
+
+//삭제
+function delete11(){
+	var result = confirm("정말 삭제하시겠습니까?");
+	if(result){
+
+		url = "/delete11.mon";
+		
+		$.ajax({
+			type: "POST",
+			dataType: "json",
+			contentType: "application/json; charset=utf-8",
+			data: data,
+			url: url,
+			success: function(res){
+				if(res.result == "OK"){
+					alert("삭제가 완료되었습니다.")
+					location.href = "/";
+				}
+			},
+			error: function(e){
+				alert("ERROR : "+e);
+			}
+		}); 
+		
+	}
+}
+
+//작성 페이지
+function write11(){
+	$('#one_page_bbs').hide();
+	$('#one_page_write').show();
+	$('#one_page_view').hide();
+	$('#one_page_update').hide();
+}
+
+function write_save(){
+	
+	var title = $("#title").val();
+	var content = $("#contents").val();
+	
+	var url = "/insert.mon";
+	
+	//post타입일 경우 사용 (json 타입으로 바꾸기)
+	var data = JSON.stringify({
+		"title" : title,
+		"content" : content
+	});
+	
+	$.ajax({
+		type : "POST",
+		dataType : "json",
+		contentType : "application/json; charset=utf-8",
+		data : data,
+		url : url,
+		success : function(res){
+			//debugger;
+			if (res.result == "OK"){
+				alert("정상적으로 저장되었습니다.");
+				location.href = "/";
+			}else{
+				alert("저장 에러");
+			}
+		},
+		error : function(e){
+			alert("ERROR!(write) : " + e);
+		}
+	})
+	
+}
+
+
+
 </script>
+
+
+
+
 
 <script type="text/javascript">
 	$().ready(function(){

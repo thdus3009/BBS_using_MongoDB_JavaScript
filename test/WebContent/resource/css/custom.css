@@ -9,7 +9,8 @@ h1 {
 	font-family : 'Hanna';
 }
 
-.notice th {
+/* 메인(bbs) */
+.notice1 th {
 	text-align: center;
 }
 
