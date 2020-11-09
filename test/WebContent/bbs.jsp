@@ -65,32 +65,11 @@ ul.mylist li{
 		
 	
 		<div id="one_page_view"><!-- 선택한 글보기 -->
-			<div class="notice">
-				<!-- //내용출력 -->
-			</div>
-			
-			<br>
-			<a href="bbs.jsp" class="btn">목록</a>
-			<div onclick="delete11()" class="btn">삭제</div>
-			<div onclick="update11()" class="btn">수정</div>
+			ㅇㅇㅇ
 		</div>
-		
-		
 		<div id="one_page_write"><!-- 글쓰기 -->
-			<div class="notice">
-				<br>
-				제목 : <input type="text" name="title" id="title">
-				<br><br>
-				내용 : <textarea rows="5" cols="22" name="contents" id="contents"></textarea>
-				<!-- <input type="submit" value="저장"> -->
-				<br><br>
-				<button onclick="save()" >저장</button>
-			
-			</div>
-			
-			<a href="bbs.jsp" class="btn">목록</a>
+			ㅇㅇㅇ
 		</div>
-
 
 	</div>
 
@@ -152,11 +131,6 @@ $().ready(function(){
 
 //클릭했을때
 function open11(key){
-	
-	$('#one_page_bbs').hide();
-	$('#one_page_write').hide();
-	$('#one_page_view').show();
-	
 	var key = key;
 	//console.log(key); //해당 "_id" 값
 
