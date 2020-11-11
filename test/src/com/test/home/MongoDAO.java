@@ -1,8 +1,5 @@
 package com.test.home;
 
-public class pager {
+public class MongoDAO {
 
-	
-
-	
 }

@@ -1,28 +1,19 @@
 package com.test.home;
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.jsp.PageContext;
 
-import org.apache.tomcat.util.http.fileupload.FileItem;
-import org.apache.tomcat.util.http.fileupload.FileUpload;
-import org.apache.tomcat.util.http.fileupload.RequestContext;
-import org.apache.tomcat.util.http.fileupload.disk.DiskFileItemFactory;
-import org.apache.tomcat.util.http.fileupload.servlet.ServletFileUpload;
 import org.bson.types.ObjectId;
-import org.eclipse.jdt.internal.compiler.ast.ThrowStatement;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -38,12 +29,8 @@ import com.mongodb.WriteConcern;
 import com.mongodb.util.JSON;
 
 
-public class controller extends HttpServlet {
+public class controller2 extends HttpServlet {
 
-	
-	MongoDAO MD = new MongoDAO();
-	
-//	MongoService
 	
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -94,14 +81,10 @@ public class controller extends HttpServlet {
 			
 				//DBCursor cursor = coll.find();
 			
-				//페이지 
-				int start = Integer.valueOf(request.getParameter("start").toString());
-				int perpage = Integer.valueOf(request.getParameter("perpage").toString());
-				System.out.println("test!!!!: "+start);	
-				System.out.println("test!!!!: "+perpage);
+			
 			
 				
-				
+				//페이지 
 				BasicDBObject projection = new BasicDBObject();
 				projection.put("title", 1);
 				projection.put("contents",1);
@@ -121,9 +104,9 @@ public class controller extends HttpServlet {
 				
 				list.add(tc);
 			
-				//1=0, 2=10, 3=20, 4=30 >> (현재페이지-1)*10 // 
+			
 				//DBCursor cursor = coll.find(query, projection).limit(10).skip(0).sort(sort); //limit : 갯수(10개) skip : 처음시작되는 부분(1,10..)
-				DBCursor cursor = coll.find(query, projection).limit(perpage).skip(start).sort(sort);
+				DBCursor cursor = coll.find(query, projection).skip(0).sort(sort);
 				while(cursor.hasNext()){
 	            	DBObject doc = cursor.next();
 	            	System.out.println(doc);
@@ -151,8 +134,8 @@ public class controller extends HttpServlet {
 			JsonObject reg = xjson.getAsJsonObject(); //json > jsonObject
 			
 			//console창에 출력되는 부분- 정보가 잘 넘어왔는지 확인
-			System.out.println("insert: "+reg.get("title").getAsString());
-			System.out.println("insert: "+reg.get("content").getAsString());
+			System.out.println(reg.get("title").getAsString());
+			System.out.println(reg.get("content").getAsString());
 			
 			//Date
 			SimpleDateFormat format1 = new  SimpleDateFormat("yyyy-MM-dd");			
@@ -262,52 +245,8 @@ public class controller extends HttpServlet {
 		
 		}else if(request.getRequestURI().endsWith("test.mon")){
 			String data = getBody(request);
-			System.out.println("file data: "+data);
+			System.out.println(data);
 			
-			
-/*			String CHARSET = "utf-8";
-			String ATTACHES_DIR = "C:\\File_Attached";
-			
-	        response.setContentType("text/html; charset=UTF-8");
-	        request.setCharacterEncoding(CHARSET);
-	        PrintWriter out1 = response.getWriter();
-	 
-	 
-	        File attachesDir = new File(ATTACHES_DIR);
-	 
-	        DiskFileItemFactory fileItemFactory = new DiskFileItemFactory();
-	        fileItemFactory.setRepository(attachesDir);
-	        ServletFileUpload fileUpload = new ServletFileUpload(fileItemFactory);
-
-	        
-	        try {
-	            List<FileItem> items = fileUpload.parseRequest((RequestContext) request);
-	            for (FileItem item : items) {
-	                if (item.isFormField()) {
-	                    System.out.printf("파라미터 명 : %s, 파라미터 값 :  %s \n", item.getFieldName(), item.getString(CHARSET));
-	                } else {
-	                    System.out.printf("파라미터 명 : %s, 파일 명 : %s,  파일 크기 : %s bytes \n", item.getFieldName(),
-	                            item.getName(), item.getSize());
-	                    if (item.getSize() > 0) {
-	                        String separator = File.separator;
-	                        int index =  item.getName().lastIndexOf(separator);
-	                        String fileName = item.getName().substring(index  + 1);
-	                        File uploadFile = new File(ATTACHES_DIR +  separator + fileName);
-	                        item.write(uploadFile);
-	                    }
-	                }
-	            }
-	 
-	 
-	            out.println("<h1>파일 업로드 완료</h1>");
-	 
-	 
-	        } catch (Exception e) {
-	            // 파일 업로드 처리 중 오류가 발생하는 경우
-	            e.printStackTrace();
-	            out.println("<h1>파일 업로드 중 오류가  발생하였습니다.</h1>");
-	        }
-*/
 		}
         
 
