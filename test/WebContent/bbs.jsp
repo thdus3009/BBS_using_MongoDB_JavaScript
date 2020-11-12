@@ -128,10 +128,27 @@ ul.mylist li{
 
 <!-- jquery.js와 동시에 실행이 되서 아래로 빼놓았음-->
 <script type="text/javascript">
+function BBS(){
+	this.curPage = 0; //현재페이지 (현재위치 : 3페이지)
+	this.perPage = 10; //한페이지당 출력할 글 갯수(1페이지10개)
+	
+	this.curBlock = 0; //현재 블록(1블록:1~10페이지 2블록:11~20페이지 3블록:21~30페이지 ..)
+	this.perBlock = 10; //한 블록당 몇페이지 보여줄건지(1블록10페이지)
+	
+	this.totalCount = 0; //글 전체 갯수(ex. 62개)
+	this.totalPage = 0; //전체 페이지 수 (ex. 7페이지)
+	this.totalBlock = 0; //1블럭
+	
+	this.startRow = 0; //0 10 20 (한 페이지에서 시작번호와 끝번호)
+	this.lastRow = 0; //9 19 29
+	
+	this.startNum = 0; //1 11 21 (한 블록에서 시작페이지와 끝페이지)
+	this.lastNum = 0; //10 20 30
+	
+	
+}
 
-
-var totalcount;
-
+// ------- 첫화면 or 새로고침 
 $().ready(function(){
 	
 	$('#one_page_bbs').show();
@@ -139,109 +156,138 @@ $().ready(function(){
 	$('#one_page_view').hide();
 	$('#one_page_update').hide();
 	
-	//===============================
+	first_page();	
 	
-	var url = "/loadAll.mon?start=10&perpage=10";
-	//전체 갯수:totalCount / 전체 페이지수:totalPage / 현재페이지: nowpage
-	
-	//전체 갯수가 61개면 전체페이지수는 7개
-	
-	
-	//1=0, 2=10, 3=20, 4=30 >> (현재페이지-1)*perpage // 
-	//var url = "/loadAll.mon?start="+start+"&perpage="+perpage;
-	
-	$.ajax({
-		type : "GET",
-		dataType : "json",
-		url : url,
-		contentType : "application/json; charset=utf-8",
-		success : function(res){
-			
-			var html = "";
-			html += "<table>";
-			
-			//페이지 할 때 사용할 총 갯수
-			totalcount = res[0].totalcount;			
-			
-			for (var i = 1 ; i < res.length; i++){
-			   var item = res[i];
-			   
-			   var title = item.title;
-			   var date = item.date;
-			   
-			   //var id = item._id;
-			   var id = item._id.$oid.toString();
-			   //console.log(id);
-			   
-			   html += "<tr>";
-			   html += "<td style=\"cursor:pointer;\" onclick=\"open11('"+id+"');\">"+title+"</td>";
-			   html += "<td>"+date+"</td>";
-			   html += "</tr>";
-			}
-			
-			html += "</table>";
-
-			$("tbody").html(html);
-			page();
-				
-		},
-		error : function(e){
-			alert("ERROR!(bbs) : " + e)
-		}
-	})
+	cur_page();
 
 });
 
+// ------- pagination 클릭했을때
+function p_click(i){
+
+	BBS.curPage=i;
+	
+	BBS.startRow = (BBS.curPage-1)*BBS.perPage; //해당 페이지에서 시작번호(0 10 20)
+	BBS.lastRow = BBS.curPage * BBS.perPage -1; //해당 페이지에서 끝번호(9 19 29)
+	
+	cur_page(); 
+}
 
 //====================== pagination =============================
-
-function BBS(){
-	this.curPage = 0; //현재페이지
-	this.perPage = 10; //한페이지당 출력할 글 갯수(1페이지10개)
-	
-	this.curBlock = 0; //현재 블록(1블록:1~10페이지 2블록:11~20페이지 3블록:21~30페이지 ..)
-	this.perBlock = 10; //한 블록당 몇페이지 보여줄건지(1블록10페이지)
-	
-	this.totalCount = 0; //글 전체 갯수(ex. 62개)
-	this.totalPage = 0; //
-	this.totalBlock = 0;
-	
-	this.startRow = 0;
-	this.lastRow = 0;
-	
-	this.startNum = 0;
-	this.lastNum = 0;
-	
-	
-}
  
 
 //페이징 처리 //즉시실행
-function page(){
-	 var aa= totalcount;
-	 console.log("토탈카운트: "+aa);
-	 
-	 
-	 /* 	if(BBS.start>1){
-		
-	}
-	
-	$('.paginated').each(function(){
-		console.log("aaaa");
-	})
-	 */
-	navigator();
-}
- 
- function navigator(page){
-	 console.log("test2: "+page);
-	 
-	 var nav = new Array();
-	 
-	 
-	 
- }
+function first_page(){
 
+	BBS.curPage=1;
+	
+	BBS.perPage = 10;
+	BBS.perBlock = 10;
+	
+	BBS.startRow = 0;
+	BBS.lastRow = 9;
+}
+
+ 
+ //현재 페이지
+ function cur_page(){
+		//1=0, 2=10, 3=20, 4=30 >> (현재페이지-1)*perpage // 
+		var url = "/loadAll.mon?start="+BBS.startRow+"&perpage="+BBS.perPage;
+		
+		$.ajax({
+			type : "GET",
+			dataType : "json",
+			url : url,
+			contentType : "application/json; charset=utf-8",
+			success : function(res){
+				
+				var html = "";
+				html += "<table>";
+				
+				//페이지 할 때 사용할 총 갯수
+				BBS.totalCount = res[0].totalcount;	
+				
+				for (var i = 1 ; i < res.length; i++){
+				   var item = res[i];
+				   
+				   var title = item.title;
+				   var date = item.date;
+				   
+				   //var id = item._id;
+				   var id = item._id.$oid.toString();
+				   //console.log(id);
+				   
+				   html += "<tr>";
+				   html += "<td style=\"cursor:pointer;\" onclick=\"open11('"+id+"');\">"+title+"</td>";
+				   html += "<td>"+date+"</td>";
+				   html += "</tr>";
+				}
+				
+				html += "</table>";
+
+				$("tbody").html(html);
+				
+				navigator();	
+			},
+			error : function(e){
+				alert("ERROR!(bbs) : " + e)
+			}
+		})
+ }
+ 
+ function navigator(){
+
+		if(BBS.totalCount%BBS.perPage!=0){ //전체 페이지
+			BBS.totalPage = parseInt(BBS.totalCount/BBS.perPage)+1; 		
+		}else{
+			BBS.totalPage = parseInt(BBS.totalCount/BBS.perPage);
+		}
+
+		if(BBS.totalPage%BBS.perBlock!=0){ //전체 블럭
+			BBS.totalBlock = parseInt(BBS.totalPage/BBS.perBlock)+1;		
+		}else{
+			BBS.totalBlock = parseInt(BBS.totalPage/BBS.perBlock);
+		}
+		
+		/* 현재 블록 */
+		BBS.curBlock = parseInt(BBS.curPage/BBS.perBlock)+1; 
+		
+		/* 해당 블럭의 시작 페이지번호 */
+		BBS.startNum = parseInt((BBS.curBlock-1)*BBS.perBlock)+1;
+		
+		/* 해당 블럭의 끝 페이지번호 */
+		BBS.lastNum = parseInt(BBS.curBlock*BBS.perBlock);
+		if(BBS.totalPage<=BBS.lastNum){
+			BBS.lastNum = BBS.totalPage;
+		}
+		
+
+		
+		//만일 새로고침한 상태라 curPage가 null이라면 1적용
+/* 		console.log("현재 누른 페이지: "+BBS.curPage);
+		console.log("시작번호: "+BBS.startRow);
+		console.log("끝번호: "+BBS.lastRow);
+		console.log("전체 글 갯수 : "+BBS.totalCount);
+		console.log("전체 페이지 수 : "+BBS.totalPage);
+		console.log("전체 블록: "+BBS.totalBlock);
+		console.log("현재 블록: "+BBS.curBlock);
+		console.log("시작페이지: "+BBS.startNum);
+		console.log("끝페이지: "+BBS.lastNum); */
+		
+		
+
+		var html ="";
+		
+		//이전, 다음 버튼은 ....나중에 만들자 ㅎ
+		for (var i = BBS.startNum ; i <= BBS.lastNum; i++){
+				html+= "<span style=\"cursor:pointer;\" onclick=\"p_click('"+i+"');\">"+i+"</span>";
+				html+= "&nbsp;&nbsp;";
+		 }
+		
+		$("#paging").html(html); 
+		 
+		 
+	 }
 
 //===================================================
 
