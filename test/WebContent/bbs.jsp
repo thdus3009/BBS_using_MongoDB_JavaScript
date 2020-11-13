@@ -1,10 +1,12 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
 <title>bbs test ver.</title>
 <script src="${pageContext.request.contextPath}/resource/js/jquery.js"></script>
 
@@ -94,7 +96,9 @@ ul.mylist li{
 				내용 : <textarea rows="5" cols="22" name="contents" id="contents"></textarea>
 				<!-- <input type="submit" value="저장"> -->
 				<br><br>
-				파일 업로드 : <div class="dropzone" id="myDropzone" style="width: 93%;" name="file1"></div>
+				파일 업로드 :	<form action="${pageContext.request.contextPath}/test" method="post" enctype="multipart/form-data"
+				class="dropzone" id="myDropzone" style="width: 93%;" name="file1"></form> 
+				<!-- <div class="dropzone" id="myDropzone" style="width: 93%;" name="file1"></div> -->
 				<br><br>
 				<button onclick="write_save()" id="submit-all">저장</button>
 			</div>
@@ -453,7 +457,7 @@ function write11(){
 	    init: function() {
 	        dzClosure = this; 
 
-	        $("#submit-all").click(function(e) {
+	        $("#").click(function(e) {
 	            //location.href = "/";
 	            //e.preventDefault();//동작중지
 	            e.stopPropagation();//상위엘리먼트에 이벤트 전달 막아주기
@@ -467,82 +471,115 @@ function write11(){
 	    }
 	} */
 	
-	/* only 파일 */
-    Dropzone.options.myDropzone = {
+	/* only 파일 >>여기정보를 어떻게 파라미터로 넘기는지 모르겠음 */ 
+      Dropzone.options.myDropzone = {
 
-	        url: '/test.mon',          //업로드할 url (ex)컨트롤러)
-	        init: function () {
-	            /* 최초 dropzone 설정시 init을 통해 호출 */
-	            var submitButton = document.querySelector("#submit-all");
-	            var myDropzone = this; //closure
-
-	            submitButton.addEventListener("click", function () {
-	                
-	                console.log("업로드");
-	                //tell Dropzone to process all queued files
-	                myDropzone.processQueue(); 
-
-	            });
-	            
-	            //정보 넘김 완료했을때
-/* 	            this.on("complete",function(file){
-	            	//alert("파일 업로드");
-	            	//location.href = "/";
-	            }); */
-	                
-	            this.on("success",function(){
-	            	
-	            });
-
-	        },
 	        autoProcessQueue: false,    // 자동업로드 여부 (true일 경우, 바로 업로드 되어지며, false일 경우, 서버에는 올라가지 않은 상태임 processQueue() 호출시 올라간다.)
 	        clickable: true,            // 클릭가능여부
-	        thumbnailHeight: 90,        // Upload icon size
-	        thumbnailWidth: 90,         // Upload icon size
 	        maxFiles: 5,                // 업로드 파일수
-	        maxFilesize: 10,            // 최대업로드용량 : 10MB
+	        maxFilesize: 300,           // 최대업로드용량 : 300MB
 	        parallelUploads: 99,        // 동시파일업로드 수(이걸 지정한 수 만큼 여러파일을 한번에 컨트롤러에 넘긴다.)
 	        addRemoveLinks: true,       // 삭제버튼 표시 여부
-	        dictRemoveFile: '삭제',     // 삭제버튼 표시 텍스트
+	        dictRemoveFile: '삭제',      // 삭제버튼 표시 텍스트
 	        uploadMultiple: true,       // 다중업로드 기능
+	        dictFileTooBig: "파일의 용량이 너무 큽니다.",
+	        
+	        renameFile: function(file){ //중복이름 방지
+	        	var dt = new Date();
+	        	var time = dt.getTime();
+	        	return time+file.name;
+	        },
+	        
+	        dictDefaultMessage: "파일 선택 (클릭해 주세요.)<br>Max size : 300MB",
+	        accept: function(file, done){
+	        	done();
+	        }, 
+	        
+	        url: '/FileUpload.gu',          //업로드할 url (ex)컨트롤러)
+	        init: function () {
+	            /* 최초 dropzone 설정시 init을 통해 호출 */
+	            //var submitButton = document.querySelector("#submit-all");
+	            myDropzone = this; //closure
 
-	};
+	         //   submitButton.addEventListener("click", function () {
+	        //        
+	         //       console.log("업로드");
+	                //tell Dropzone to process all queued files
+	         //       myDropzone.processQueue(); 
 
-	
-    function write_save(){
+	         ///   });
+	            
+	            //정보 넘김을 전부 완료했을때
+	            this.on("complete",function(file){
+	            	alert("파일 업로드_complete");
+	            	//location.href = "/";
+	            }); 
+	            //파일 보낼때 (제목,내용 보내지는게 문제가 아니고 일단 파일이 저장되고 불러와지는지가 중요)
+	            this.on("sending",function(data, xhr, formData){ 
+	            	debugger;
+	            	//formData.append("title", $("#title").val());
+	            	//formData.append("body", $("#contents").val());
+	            });
+	            //정보 하나씩넘길때마다 작동
+	            this.on("success",function(file, response){
+	            	alert("파일 업로드_success");
+	            	debugger;
+	            });
+
+	        }
+
+
+	}; 
+
+
+	function write_save(){
+
+		myDropzone.processQueue(); 
+//		return false;
+
 
     var title = $("#title").val();
 	var content = $("#contents").val();
 	
+	//alert(title+" "+content);
+	
 	var url = "/insert.mon";
 	
-	//post타입일 경우 사용 (json 타입으로 바꾸기)
-	var data = JSON.stringify({
-		"title" : title,
-		"content" : content
-	});
-	
-	$.ajax({
-		type : "POST",
-		dataType : "json",
-		contentType : "application/json; charset=utf-8",
-		data : data,
-		url : url,
-		success : function(res){
-			//debugger;
-			if (res.result == "OK"){
-				alert("정상적으로 저장되었습니다.");
-				location.href = "/";
-			}else{
-				alert("저장 에러");
+	console.log("aa: "+title);
+	if(title==""||content==""){
+		alert("제목과 내용을 입력해 주세요.");
+	}else{
+
+		//post타입일 경우 사용 (json 타입으로 바꾸기)
+		var data = JSON.stringify({
+			"title" : title,
+			"content" : content
+		});
+		
+		$.ajax({
+			type : "POST",
+			dataType : "json",
+			contentType : "application/json; charset=utf-8",
+			data : data,
+			url : url,
+			success : function(res){
+				//debugger;
+				if (res.result == "OK"){
+					alert("정상적으로 저장되었습니다.");
+					location.href = "/";
+				}else{
+					alert("저장 에러");
+				}
+			},
+			error : function(e){
+				alert("ERROR!(write) : " + e);
 			}
-		},
-		error : function(e){
-			alert("ERROR!(write) : " + e);
-		}
-	})
+		})
+		
+	}
+
 	
-}    
+}     
 
 
 

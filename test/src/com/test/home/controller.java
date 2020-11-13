@@ -37,11 +37,10 @@ import com.mongodb.MongoClient;
 import com.mongodb.WriteConcern;
 import com.mongodb.util.JSON;
 
-
 public class controller extends HttpServlet {
 
 	
-	MongoDAO MD = new MongoDAO();
+	MongoFileDownload MD = new MongoFileDownload();
 	
 //	MongoService
 	
@@ -58,6 +57,10 @@ public class controller extends HttpServlet {
 //		System.out.println(title);
 //		System.out.println(contents);
 
+		request.setCharacterEncoding("UTF-8");
+		response.setCharacterEncoding("UTF-8"); 
+		response.setContentType("text/html; charset=UTF-8");
+		
 		MongoClient mongoClient = null;
 		DBCollection coll = null;
 		
@@ -97,8 +100,8 @@ public class controller extends HttpServlet {
 				//페이지 
 				int start = Integer.valueOf(request.getParameter("start").toString());
 				int perpage = Integer.valueOf(request.getParameter("perpage").toString());
-				System.out.println("test!!!!: "+start);	
-				System.out.println("test!!!!: "+perpage);
+//				System.out.println("test!!!!: "+start);	
+//				System.out.println("test!!!!: "+perpage);
 			
 				
 				
@@ -262,10 +265,13 @@ public class controller extends HttpServlet {
 		
 		}else if(request.getRequestURI().endsWith("test.mon")){
 			String data = getBody(request);
-			System.out.println("file data: "+data);
+	
+//			System.out.println("file data: "+data);
+//			System.out.println(request.getServletContext());
+//			System.out.println(request.getContentType());
 			
 			
-/*			String CHARSET = "utf-8";
+			String CHARSET = "utf-8";
 			String ATTACHES_DIR = "C:\\File_Attached";
 			
 	        response.setContentType("text/html; charset=UTF-8");
@@ -307,7 +313,7 @@ public class controller extends HttpServlet {
 	            e.printStackTrace();
 	            out.println("<h1>파일 업로드 중 오류가  발생하였습니다.</h1>");
 	        }
-*/
+
 		}
         
 
