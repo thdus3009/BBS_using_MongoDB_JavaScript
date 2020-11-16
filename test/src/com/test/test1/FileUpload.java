@@ -6,6 +6,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 import javax.servlet.ServletException;
@@ -19,7 +21,17 @@ import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import com.mongodb.BasicDBObject;
+import com.mongodb.DB;
+import com.mongodb.DBCollection;
+import com.mongodb.DBObject;
+import com.mongodb.MongoClient;
+import com.mongodb.WriteConcern;
+import com.sun.javafx.scene.web.Debugger;
+import com.sun.org.apache.xml.internal.resolver.helpers.Debug;
 
 @WebServlet("/FileUpload.gu")
 //어노테이션 설정하면 web.xml 작성을 생략할 수 있다.
@@ -73,7 +85,7 @@ public class FileUpload extends HttpServlet{
         String appPath = request.getServletContext().getRealPath("");
 //		String uploadPath = appPath +  SAVE_DIR + File.separator + "test";
         String uploadPath = SAVE_DIR + File.separator + "test";
-		
+
 		System.out.println("uploadPath : " + uploadPath);
         File uploadDir = new File(uploadPath);
         if (!uploadDir.exists()) {
@@ -82,21 +94,24 @@ public class FileUpload extends HttpServlet{
 		
 		String title = "";
 		String contents = "";
- 
+		String sfileName = "";
+		
         try {
-            // parses the request's content to extract file data
-            @SuppressWarnings("unchecked")
+        
+            @SuppressWarnings("unchecked") //노란색 경고를 없애준다.
             List<FileItem> formItems = upload.parseRequest(request);
-            
+            System.out.println(formItems);
        //     System.out.println("formItems.size() : " + formItems.size());
  
-            String sfileName = "";
+            
+            
             if (formItems != null && formItems.size() > 0) {
                 // iterates over form's fields
                 for (FileItem item : formItems) {
-                    // processes only fields that are not form fields
-                //	System.out.println(item.getFieldName());
-                    if (!item.isFormField()) {
+                		System.out.println(item.getFieldName());
+                	
+                    if (!item.isFormField()) { //파일데이터면 false , 그 외 데이터면 true 반환
+                    	
                     	String fileName = new File(item.getName()).getName();
                     	if (sfileName == ""){
                     		sfileName = fileName;
@@ -108,23 +123,24 @@ public class FileUpload extends HttpServlet{
                         String filePath = uploadPath + File.separator + fileName;
                         File storeFile = new File(filePath);
                         
-                         System.out.println("file upload Path : " + filePath);
+                        System.out.println("file upload Path : " + filePath);
                 
                         if (!item.getContentType().equals("") && !item.getName().equals("")){
-                        	//File업로드 필드일 경우 파일을 저장한다.
+                        	
+                        	//File업로드 필드일 경우 파일을 저장한다.(파일이 저장되는 부분)
                         	item.write(storeFile);
                         	
                         	//업로드된 파일을 몽고 DB에 추가한다.
 							System.out.println("title : " + title);
 							System.out.println("contents : " + contents);
-							
+							System.out.println("file : "+sfileName);
                         	
                         	///////////////////////////////////////////
                         }
                         
                         request.setAttribute("message", "Upload has been done successfully!");
                     }else{
-                    	 // saves the file on disk
+                    	 // 그 외 데이터
                     	System.out.println("필드 저장용");
                         System.out.println(item.getFieldName());
                         System.out.println(item.getString("UTF-8"));
@@ -141,12 +157,60 @@ public class FileUpload extends HttpServlet{
                 
                 
                 //업로드 파일 이외에 필드들을 몽고DB에 저장한다.
+                //DB
+                MongoClient mongoClient = null;
+                DBCollection coll = null;
+                
+                try {
+                	String MongoDB_IP="localhost";
+                	int MongoDB_Port=27017;
+                	mongoClient = new MongoClient(MongoDB_IP,MongoDB_Port);
+                	
+                	System.out.println("server 접속 성공");
+                	
+                	//쓰기권한 부여
+                	WriteConcern w = new WriteConcern(1,2000);//쓰게 락 갯수, 연결 시간 2000 //쓰레드 쓰게되면 2개 동시에 쓸 경우도 생기니까
+                	mongoClient.setWriteConcern(w);
+                	//데이터베이스 연결
+                	DB db = mongoClient.getDB("test");
+                	//컬렉션 가져오기
+                	coll = db.getCollection("test");
+                	System.out.println("db,collection 접속 성공");
+                	System.out.println();
+                	
+                } catch (Exception e) {
+                	System.out.println(e.getMessage());
+                }
+                
+                //Date
+                SimpleDateFormat format1 = new  SimpleDateFormat("yyyy-MM-dd");			
+                Date time = new Date();			
+                String date1 = format1.format(time);
+                
+                //mongoDB로 정보 보내기
+                DBObject doc = new BasicDBObject();
+                doc.put("title", title);
+                doc.put("contents", contents);
+                doc.put("date", date1);
+                doc.put("file", sfileName);
+                
+                coll.insert(doc);
+                
+                //json형태로 success부분에 받고 싶은 정보 입력
+                JsonObject res = new JsonObject();
+                res.addProperty("result", "OK"); //json형태
+                
+                //PrintWriter에 관련한 변수명 : out //서버에서 정보를 받고 내려오는 부분(String으로)
+                out.println(res.getAsJsonObject());
                 
                 ///////////////////////////////////////////////////////////
                 
                 result.addProperty("result", "OK");
                 result.addProperty("filename", sfileName);
             }
+            
+            
+            
         } catch (Exception ex) {
             request.setAttribute("message", "There was an error: " + ex.getMessage());
         }
@@ -154,6 +218,12 @@ public class FileUpload extends HttpServlet{
        
         out.println(result.getAsJsonObject());
 		out.close();
+	}
+
+
+	private String getBody(HttpServletRequest request) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 	
 }

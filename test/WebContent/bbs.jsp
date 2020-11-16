@@ -132,25 +132,23 @@ ul.mylist li{
 
 <!-- jquery.js와 동시에 실행이 되서 아래로 빼놓았음-->
 <script type="text/javascript">
-function BBS(){
-	this.curPage = 0; //현재페이지 (현재위치 : 3페이지)
-	this.perPage = 10; //한페이지당 출력할 글 갯수(1페이지10개)
+
+	var curPage = 1; //현재페이지 (현재위치 : 3페이지)
+	var perPage = 10; //한페이지당 출력할 글 갯수(1페이지10개)
 	
-	this.curBlock = 0; //현재 블록(1블록:1~10페이지 2블록:11~20페이지 3블록:21~30페이지 ..)
-	this.perBlock = 10; //한 블록당 몇페이지 보여줄건지(1블록10페이지)
+	var curBlock = 1; //현재 블록(1블록:1~10페이지 2블록:11~20페이지 3블록:21~30페이지 ..)
+	var perBlock = 10; //한 블록당 몇페이지 보여줄건지(1블록10페이지)
 	
-	this.totalCount = 0; //글 전체 갯수(ex. 62개)
-	this.totalPage = 0; //전체 페이지 수 (ex. 7페이지)
-	this.totalBlock = 0; //1블럭
+	var totalCount = 0; //글 전체 갯수(ex. 62개)
+	var totalPage = 0; //전체 페이지 수 (ex. 7페이지)
+	var totalBlock = 0; //1블럭
 	
-	this.startRow = 0; //0 10 20 (한 페이지에서 시작번호와 끝번호)
-	this.lastRow = 0; //9 19 29
+	var startRow = 0; //0 10 20 (한 페이지에서 시작번호와 끝번호)
+	var lastRow = 9; //9 19 29
 	
-	this.startNum = 0; //1 11 21 (한 블록에서 시작페이지와 끝페이지)
-	this.lastNum = 0; //10 20 30
+	var startNum = 0; //1 11 21 (한 블록에서 시작페이지와 끝페이지)
+	var lastNum = 0; //10 20 30
 	
-	
-}
 
 // ------- 첫화면 or 새로고침 
 $().ready(function(){
@@ -159,29 +157,44 @@ $().ready(function(){
 	$('#one_page_write').hide();
 	$('#one_page_view').hide();
 	$('#one_page_update').hide();
-	
-	first_page();	
-	
+
 	cur_page();
 
 });
 
 // ------- pagination 클릭했을때
-function p_click(i){
 
-	BBS.curPage=i;
-	
-	BBS.startRow = (BBS.curPage-1)*BBS.perPage; //해당 페이지에서 시작번호(0 10 20)
-	BBS.lastRow = BBS.curPage * BBS.perPage -1; //해당 페이지에서 끝번호(9 19 29)
+//한블럭에서 시작페이지: startNum //한블럭에서 끝페이지: lastNum
+
+function b_click(){/* 이전 */
+	curPage=(startNum-1);
+	startRow = (curPage-1)*perPage;
+	lastRow = curPage * perPage -1;
 	
 	cur_page(); 
 }
 
+function p_click(i){ //ajax로 페이지 바꾸기
+	curPage=i;
+	
+	startRow = (curPage-1)*perPage; //해당 페이지에서 시작번호(0 10 20)
+	lastRow = curPage * perPage -1; //해당 페이지에서 끝번호(9 19 29)
+	
+	cur_page(); 
+}
+
+function n_click(){ /* 다음 */
+	curPage=(lastNum+1); 
+	startRow = (curPage-1)*perPage;
+	lastRow = curPage * perPage -1;
+	
+	cur_page(); 
+}
 //====================== pagination =============================
  
 
 //페이징 처리 //즉시실행
-function first_page(){
+/* function first_page(){
 
 	BBS.curPage=1;
 	
@@ -190,13 +203,14 @@ function first_page(){
 	
 	BBS.startRow = 0;
 	BBS.lastRow = 9;
-}
+} */
 
  
  //현재 페이지
  function cur_page(){
 		//1=0, 2=10, 3=20, 4=30 >> (현재페이지-1)*perpage // 
-		var url = "/loadAll.mon?start="+BBS.startRow+"&perpage="+BBS.perPage;
+
+		var url = "/loadAll.mon?start="+startRow+"&perpage="+perPage;
 		
 		$.ajax({
 			type : "GET",
@@ -209,7 +223,7 @@ function first_page(){
 				html += "<table>";
 				
 				//페이지 할 때 사용할 총 갯수
-				BBS.totalCount = res[0].totalcount;	
+				totalCount = res[0].totalcount;	
 				
 				for (var i = 1 ; i < res.length; i++){
 				   var item = res[i];
@@ -241,52 +255,66 @@ function first_page(){
  
  function navigator(){
 
-		if(BBS.totalCount%BBS.perPage!=0){ //전체 페이지
-			BBS.totalPage = parseInt(BBS.totalCount/BBS.perPage)+1; 		
+		if(totalCount%perPage!=0){ //전체 페이지
+			totalPage = parseInt(totalCount/perPage)+1; 		
 		}else{
-			BBS.totalPage = parseInt(BBS.totalCount/BBS.perPage);
+			totalPage = parseInt(totalCount/perPage);
 		}
 
-		if(BBS.totalPage%BBS.perBlock!=0){ //전체 블럭
-			BBS.totalBlock = parseInt(BBS.totalPage/BBS.perBlock)+1;		
+		if(totalPage%perBlock!=0){ //전체 블럭
+			totalBlock = parseInt(totalPage/perBlock)+1;		
 		}else{
-			BBS.totalBlock = parseInt(BBS.totalPage/BBS.perBlock);
+			totalBlock = parseInt(totalPage/perBlock);
 		}
 		
 		/* 현재 블록 */
-		BBS.curBlock = parseInt(BBS.curPage/BBS.perBlock)+1; 
+		if(curPage%perBlock!=0){
+			curBlock = parseInt(curPage/perBlock)+1; 
+		}else{
+			curBlock = parseInt(curPage/perBlock);
+		} 
 		
 		/* 해당 블럭의 시작 페이지번호 */
-		BBS.startNum = parseInt((BBS.curBlock-1)*BBS.perBlock)+1;
+		startNum = parseInt((curBlock-1)*perBlock)+1;
 		
 		/* 해당 블럭의 끝 페이지번호 */
-		BBS.lastNum = parseInt(BBS.curBlock*BBS.perBlock);
-		if(BBS.totalPage<=BBS.lastNum){
-			BBS.lastNum = BBS.totalPage;
+		lastNum = parseInt(curBlock*perBlock);
+		if(totalPage<=lastNum){
+			lastNum = totalPage;
 		}
 		
 
 		
 		//만일 새로고침한 상태라 curPage가 null이라면 1적용
-/* 		console.log("현재 누른 페이지: "+BBS.curPage);
-		console.log("시작번호: "+BBS.startRow);
-		console.log("끝번호: "+BBS.lastRow);
-		console.log("전체 글 갯수 : "+BBS.totalCount);
-		console.log("전체 페이지 수 : "+BBS.totalPage);
-		console.log("전체 블록: "+BBS.totalBlock);
-		console.log("현재 블록: "+BBS.curBlock);
-		console.log("시작페이지: "+BBS.startNum);
-		console.log("끝페이지: "+BBS.lastNum); */
+/* 		console.log(" ");
+		console.log("현재 누른 페이지: "+curPage);
+		console.log("시작번호: "+startRow);
+		console.log("끝번호: "+lastRow);
+		console.log("전체 글 갯수 : "+totalCount);
+		console.log("전체 페이지 수 : "+totalPage);
+		console.log("전체 블록: "+totalBlock);
+		console.log("현재 블록: "+curBlock);
+		console.log("시작페이지: "+startNum);
+		console.log("끝페이지: "+lastNum); 
 		
-		
+		 */
 
 		var html ="";
 		
-		//이전, 다음 버튼은 ....나중에 만들자 ㅎ
-		for (var i = BBS.startNum ; i <= BBS.lastNum; i++){
+		if(curBlock!=1){
+			html+= "<span style=\"cursor:pointer;\" onclick=\"b_click();\">이전<span>"
+			html+= "&nbsp;&nbsp;";						
+		}
+		
+		for (var i = startNum ; i <= lastNum; i++){
 				html+= "<span style=\"cursor:pointer;\" onclick=\"p_click('"+i+"');\">"+i+"</span>";
 				html+= "&nbsp;&nbsp;";
 		 }
+		
+		if(curBlock!=totalBlock){
+			html+= "<span style=\"cursor:pointer;\" onclick=\"n_click();\">다음<span>"
+			html+= "&nbsp;&nbsp;";			
+		}
 		
 		$("#paging").html(html); 
 		 
@@ -321,7 +349,7 @@ function open11(id){
 		data: data,
 		url: url,
 		success: function(res){
-	
+			
 			var html ="";
 			html+= "<br>";
 			html+= "제목 : <span id=\"title\">"+res.title+"</span>";
@@ -330,13 +358,44 @@ function open11(id){
 			html+= "<br><br>";
 			html+= "내용 : <span id=\"contents\">"+res.contents+"</span>";
 			html+= "<br><br>";
-
+			
+			if(res.file!=null){
+				var file = res.file;
+				var file_split = file.split("-spl-");
+				html+="\<업로드 파일\><br>"
+				for(var i in file_split){
+					html+= "<div onclick=\"file_download('"+file_split[i]+"')\" style=\"cursor:pointer;\" >"
+							+file_split[i]+"</div>";
+				} 
+					
+				html+= "<br>";				
+			}
+			
 			$(".notice2").html(html); 
 		},
 		error: function(e){
 			alert("ERROR(view) : "+ e);
 		}
 			
+	});
+	
+}
+
+//파일 다운로드
+function file_download(file_name){
+	//var url = "/loadAll.mon?start="+startRow+"&perpage="+perPage;
+	var url = "/FileDownload.gu?filename="+file_name;
+	$.ajax({
+		type : "GET",
+		dataType : "json",
+		url : url,
+		contentType : "application/json; charset=utf-8",
+		success : function(res){
+			alert("됐으려나");
+		},
+		error: function(e){
+			alert("ERROR(file_down) : "+ e);
+		}
 	});
 	
 }
@@ -516,14 +575,14 @@ function write11(){
 	            }); 
 	            //파일 보낼때 (제목,내용 보내지는게 문제가 아니고 일단 파일이 저장되고 불러와지는지가 중요)
 	            this.on("sending",function(data, xhr, formData){ 
-	            	debugger;
-	            	//formData.append("title", $("#title").val());
-	            	//formData.append("body", $("#contents").val());
+	            	//debugger;
+	            	formData.append("title", $("#title").val());
+	            	formData.append("contents", $("#contents").val());
 	            });
 	            //정보 하나씩넘길때마다 작동
 	            this.on("success",function(file, response){
 	            	alert("파일 업로드_success");
-	            	debugger;
+	            	//debugger;
 	            });
 
 	        }
@@ -531,12 +590,15 @@ function write11(){
 
 	}; 
 
-
 	function write_save(){
+		myDropzone.processQueue(); 
+		location.reload();
+	}
+
+/* 	function write_save(){
 
 		myDropzone.processQueue(); 
 //		return false;
-
 
     var title = $("#title").val();
 	var content = $("#contents").val();
@@ -546,6 +608,7 @@ function write11(){
 	var url = "/insert.mon";
 	
 	console.log("aa: "+title);
+	
 	if(title==""||content==""){
 		alert("제목과 내용을 입력해 주세요.");
 	}else{
@@ -579,7 +642,7 @@ function write11(){
 	}
 
 	
-}     
+}      */
 
 
 

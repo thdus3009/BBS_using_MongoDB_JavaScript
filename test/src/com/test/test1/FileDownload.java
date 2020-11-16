@@ -29,30 +29,33 @@ public class FileDownload extends HttpServlet{
 		
 		
 
-		String path = request.getSession().getServletContext().getRealPath("/");		
+		//String path = request.getSession().getServletContext().getRealPath("/");		
 		String filename = request.getParameter("filename").toString();
 		
 		String dir = "";	
-		dir = "C:/File_Attached";
+		dir = "C:/File_Attached/test/";
 				
-        String filePath = dir + "/ImageList.html";  // <== 다운로드 받을 파일명                   
-        
+        String filePath = dir + filename;  // <== 다운로드 받을 파일명 (예시: C:\File_Attached\test\1605512188551hello.txt)                   
+        System.out.println("filepath****"+filePath);
+       
         File downloadFile = new File(filePath);
         FileInputStream inStream = new FileInputStream(downloadFile);
-         
-        String relativePath = getServletContext().getRealPath("");         
+        
+
+       // String relativePath = getServletContext().getRealPath("");         
         ServletContext context = getServletContext();
          
-        String mimeType = context.getMimeType(filePath);
+/*        String mimeType = context.getMimeType(filePath);
         if (mimeType == null) {        
             mimeType = "application/octet-stream";
         }      
          
-        response.setContentType(mimeType);
+        response.setContentType(mimeType);*/
         response.setContentLength((int) downloadFile.length());
         
         String downName = "";
-        String browser = request.getHeader("User-Agent"); //파일 인코딩 
+        String browser = request.getHeader("User-Agent"); //파일 인코딩 (유저정보)
+
     	if(browser.contains("MSIE") || browser.contains("Trident") || browser.contains("Chrome")){ 
     		downName = URLEncoder.encode(filename ,"UTF-8").replaceAll("\\+", "%20"); 
     	} else { 
@@ -68,7 +71,6 @@ public class FileDownload extends HttpServlet{
         OutputStream outStream = null;
         try{
         	 outStream = response.getOutputStream();
-             
              byte[] buffer = new byte[4096];
              int bytesRead = -1;
               
