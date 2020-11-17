@@ -168,6 +168,7 @@ $().ready(function(){
 
 function b_click(){/* 이전 */
 	curPage=(startNum-1);
+	console.log("curPage****"+curPage);
 	startRow = (curPage-1)*perPage;
 	lastRow = curPage * perPage -1;
 	
@@ -176,7 +177,7 @@ function b_click(){/* 이전 */
 
 function p_click(i){ //ajax로 페이지 바꾸기
 	curPage=i;
-	
+	console.log("curPage****"+curPage);
 	startRow = (curPage-1)*perPage; //해당 페이지에서 시작번호(0 10 20)
 	lastRow = curPage * perPage -1; //해당 페이지에서 끝번호(9 19 29)
 	
@@ -185,6 +186,7 @@ function p_click(i){ //ajax로 페이지 바꾸기
 
 function n_click(){ /* 다음 */
 	curPage=(lastNum+1); 
+	console.log("curPage****"+curPage);
 	startRow = (curPage-1)*perPage;
 	lastRow = curPage * perPage -1;
 	
@@ -209,7 +211,9 @@ function n_click(){ /* 다음 */
  //현재 페이지
  function cur_page(){
 		//1=0, 2=10, 3=20, 4=30 >> (현재페이지-1)*perpage // 
-
+		console.log("!!!!!!!!!!!"+startRow);
+		console.log("!!!!!!!!!!!"+perPage);
+		
 		var url = "/loadAll.mon?start="+startRow+"&perpage="+perPage;
 		
 		$.ajax({
@@ -286,7 +290,7 @@ function n_click(){ /* 다음 */
 
 		
 		//만일 새로고침한 상태라 curPage가 null이라면 1적용
-/* 		console.log(" ");
+ 		console.log(" ");
 		console.log("현재 누른 페이지: "+curPage);
 		console.log("시작번호: "+startRow);
 		console.log("끝번호: "+lastRow);
@@ -297,8 +301,8 @@ function n_click(){ /* 다음 */
 		console.log("시작페이지: "+startNum);
 		console.log("끝페이지: "+lastNum); 
 		
-		 */
-
+		 
+		
 		var html ="";
 		
 		if(curBlock!=1){
@@ -385,18 +389,8 @@ function open11(id){
 function file_download(file_name){
 	//var url = "/loadAll.mon?start="+startRow+"&perpage="+perPage;
 	var url = "/FileDownload.gu?filename="+file_name;
-	$.ajax({
-		type : "GET",
-		dataType : "json",
-		url : url,
-		contentType : "application/json; charset=utf-8",
-		success : function(res){
-			alert("됐으려나");
-		},
-		error: function(e){
-			alert("ERROR(file_down) : "+ e);
-		}
-	});
+
+	location.href = url;
 	
 }
 
