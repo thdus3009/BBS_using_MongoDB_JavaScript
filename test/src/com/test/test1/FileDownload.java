@@ -39,7 +39,7 @@ public class FileDownload extends HttpServlet{
        
         File downloadFile = new File(filePath);
         
-        System.out.println("filepath****"+filePath);
+        //System.out.println("filepath****"+filePath);
 
         //현재 위치에 파일 유무 확인
         if(downloadFile.isFile()){
@@ -69,7 +69,7 @@ public class FileDownload extends HttpServlet{
         response.setContentLength((int) downloadFile.length());
         
         
-        //한글 깨짐 방지
+        //유저 서버정보 string에 담기 + 한글 깨짐 방지
         String downName = "";
         
         String browser = request.getHeader("User-Agent"); //파일 인코딩 (유저정보)
@@ -105,8 +105,8 @@ public class FileDownload extends HttpServlet{
         	outStream.flush();
         	if (outStream != null) outStream.close(); 
         }
+        //안에 값이 null인 상태에서도 다운로드가 진행되어서 이렇게 null값 체크를 하는 것같음 
        
-        
         
     }
 	

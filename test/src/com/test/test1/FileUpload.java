@@ -52,7 +52,8 @@ public class FileUpload extends HttpServlet{
 	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		HttpSession session = request.getSession();
-
+		
+		
 		request.setCharacterEncoding("UTF-8");
 		response.setCharacterEncoding("UTF-8"); 
 		response.setContentType("text/html; charset=UTF-8");
@@ -215,7 +216,7 @@ public class FileUpload extends HttpServlet{
             request.setAttribute("message", "There was an error: " + ex.getMessage());
         }
 		
-       
+       System.out.println("result : " + result);
         out.println(result.getAsJsonObject());
 		out.close();
 	}

@@ -167,8 +167,9 @@ $().ready(function(){
 //한블럭에서 시작페이지: startNum //한블럭에서 끝페이지: lastNum
 
 function b_click(){/* 이전 */
+	
 	curPage=(startNum-1);
-	console.log("curPage****"+curPage);
+//	console.log("curPage****"+curPage);
 	startRow = (curPage-1)*perPage;
 	lastRow = curPage * perPage -1;
 	
@@ -176,8 +177,9 @@ function b_click(){/* 이전 */
 }
 
 function p_click(i){ //ajax로 페이지 바꾸기
+	
 	curPage=i;
-	console.log("curPage****"+curPage);
+//	console.log("curPage****"+curPage);
 	startRow = (curPage-1)*perPage; //해당 페이지에서 시작번호(0 10 20)
 	lastRow = curPage * perPage -1; //해당 페이지에서 끝번호(9 19 29)
 	
@@ -185,8 +187,9 @@ function p_click(i){ //ajax로 페이지 바꾸기
 }
 
 function n_click(){ /* 다음 */
+	
 	curPage=(lastNum+1); 
-	console.log("curPage****"+curPage);
+//	console.log("curPage****"+curPage);
 	startRow = (curPage-1)*perPage;
 	lastRow = curPage * perPage -1;
 	
@@ -211,9 +214,7 @@ function n_click(){ /* 다음 */
  //현재 페이지
  function cur_page(){
 		//1=0, 2=10, 3=20, 4=30 >> (현재페이지-1)*perpage // 
-		console.log("!!!!!!!!!!!"+startRow);
-		console.log("!!!!!!!!!!!"+perPage);
-		
+
 		var url = "/loadAll.mon?start="+startRow+"&perpage="+perPage;
 		
 		$.ajax({
@@ -290,7 +291,7 @@ function n_click(){ /* 다음 */
 
 		
 		//만일 새로고침한 상태라 curPage가 null이라면 1적용
- 		console.log(" ");
+/*  		console.log(" ");
 		console.log("현재 누른 페이지: "+curPage);
 		console.log("시작번호: "+startRow);
 		console.log("끝번호: "+lastRow);
@@ -300,13 +301,13 @@ function n_click(){ /* 다음 */
 		console.log("현재 블록: "+curBlock);
 		console.log("시작페이지: "+startNum);
 		console.log("끝페이지: "+lastNum); 
-		
+		 */
 		 
-		
+	
 		var html ="";
 		
 		if(curBlock!=1){
-			html+= "<span style=\"cursor:pointer;\" onclick=\"b_click();\">이전<span>"
+			html+= "<span style=\"cursor:pointer;\" onclick=\"b_click();\">이전</span>"
 			html+= "&nbsp;&nbsp;";						
 		}
 		
@@ -316,7 +317,7 @@ function n_click(){ /* 다음 */
 		 }
 		
 		if(curBlock!=totalBlock){
-			html+= "<span style=\"cursor:pointer;\" onclick=\"n_click();\">다음<span>"
+			html+= "<span style=\"cursor:pointer;\" onclick=\"n_click();\">다음</span>"
 			html+= "&nbsp;&nbsp;";			
 		}
 		
@@ -366,7 +367,9 @@ function open11(id){
 			if(res.file!=null){
 				var file = res.file;
 				var file_split = file.split("-spl-");
+				
 				html+="\<업로드 파일\><br>"
+				
 				for(var i in file_split){
 					html+= "<div onclick=\"file_download('"+file_split[i]+"')\" style=\"cursor:pointer;\" >"
 							+file_split[i]+"</div>";
@@ -390,6 +393,7 @@ function file_download(file_name){
 	//var url = "/loadAll.mon?start="+startRow+"&perpage="+perPage;
 	var url = "/FileDownload.gu?filename="+file_name;
 
+	//파일다운로드는 주소값으로(경로 이동)
 	location.href = url;
 	
 }
@@ -561,6 +565,9 @@ function write11(){
 	         //       myDropzone.processQueue(); 
 
 	         ///   });
+	            this.on("queuecomplete", function (file) {
+	                alert("All files have uploaded ");
+	           });
 	            
 	            //정보 넘김을 전부 완료했을때
 	            this.on("complete",function(file){
@@ -570,6 +577,7 @@ function write11(){
 	            //파일 보낼때 (제목,내용 보내지는게 문제가 아니고 일단 파일이 저장되고 불러와지는지가 중요)
 	            this.on("sending",function(data, xhr, formData){ 
 	            	//debugger;
+	            	debugger;
 	            	formData.append("title", $("#title").val());
 	            	formData.append("contents", $("#contents").val());
 	            });
@@ -586,7 +594,7 @@ function write11(){
 
 	function write_save(){
 		myDropzone.processQueue(); 
-		location.reload();
+		//location.reload();
 	}
 
 /* 	function write_save(){
