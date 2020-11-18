@@ -242,7 +242,7 @@ public class controller extends HttpServlet {
 			BasicDBObject query = new BasicDBObject();
 			query.put("_id", new ObjectId(reg.get("key").getAsString()));
 			
-			System.out.println("query : " + query);
+			//System.out.println("query : " + query);
 			
 			BasicDBObject rdata = new BasicDBObject();
 			rdata.put("title", reg.get("title").getAsString());

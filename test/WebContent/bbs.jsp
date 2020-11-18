@@ -60,7 +60,7 @@ ul.mylist li {
 			<!------------------ 원페이지 작동 구간 (목록) ----------------------->
 			<div id="one_page_bbs">
 
-				<div class="notice1">
+				<div class="notice notice1">
 					<table class="table-striped"
 						style="text-align: center; border: 1px solid #dddddd; width: 100%;">
 						<thead>
@@ -86,19 +86,39 @@ ul.mylist li {
 
 			<!------------------------ 선택한 글보기 -------------------------->
 			<div id="one_page_view">
-				<div class="notice2">
-					<!-- //내용출력 -->
+				<div class="notice notice2">
+					<!-- ** 내용출력 ** -->
 				</div>
 
 				<br> <a href="/" class="btn">목록</a>
 				<div onclick="delete11()" class="btn">삭제</div>
 				<div onclick="update11()" class="btn">수정</div>
+				
+				<br><br>
+					<!-- ** 댓글출력  ** -->
+				<div class="notice">
+					<!-- 댓글쓰기  -->
+					<br>
+					<div>
+						등록 / 나중에...ㅎㅎ
+						<div class="reply1"></div>
+					</div>
+					
+					<!-- 댓글보기 -->
+					<br>
+					<div>
+						&lt; 댓글 &gt; 
+						<br>댓글 출력, 댓글 삭제*수정 기능...(동록,수정,삭제하고 현재 페이지 유지 어떻게 하지? 주소값이 없잖아 ㅜㅜㅜ)	
+						
+						<div class="reply2"></div>					
+					</div>
+				</div>
 			</div>
 
 
 			<!------------------------ 글쓰기 --------------------------------->
 			<div id="one_page_write">
-				<div class="notice3">
+				<div class="notice notice3">
 					<br> 제목 : <input type="text" name="title" id="title">
 					<br>
 					<br> 내용 :
@@ -121,7 +141,7 @@ ul.mylist li {
 
 			<!------------------------ 수정 --------------------------------->
 			<div id="one_page_update">
-				<div class="notice4">
+				<div class="notice notice4">
 					<br> 제목 : <input type="text" id="up_title"> <br>
 					<br> 날짜 : <input type="text" id="up_date" readonly="readonly">
 					<br>
@@ -352,6 +372,7 @@ function open11(id){
 	$('#one_page_update').hide();
 	
 	key = id;
+	
 	data= JSON.stringify({ // JSON.stringify : json 객체를 String 객체로 변환
 		"key" : key
 	})
@@ -391,12 +412,62 @@ function open11(id){
 			}
 			
 			$(".notice2").html(html); 
+			
+			/* ---------------------------댓글 입력--------------------------------- */
+			var id = res._id.$oid.toString();
+			
+			var html2 = "";
+			html2+= "<input type=\"hidden\" id=\"id\" value=\""+id+"\">";
+			html2+= "닉네임 : <input type=\"text\" id=\"nick_name\"><br><br>"
+			html2+= "댓글 : <input type=\"text\" name=\"reply\" id=\"reply\" style=\"width:90%;\">";
+			html2+= "&emsp; <button onclick=\"reply_save()\">등록</button>"
+			$(".reply1").html(html2);
+			
+			/* ---------------------------댓글 출력--------------------------------- */
+			var html3 = "";
+			
+			
 		},
 		error: function(e){
 			alert("ERROR(view) : "+ e);
 		}
 			
 	});
+	
+}
+
+//댓글(reply) 저장 
+function reply_save(){
+	var nick_name = $("#nick_name").val();
+	var reply = $("#reply").val();
+	var id = $("#id").val();
+	
+ 	var url = "/Reply.gu?id="+id+"&reply="+reply+"&nick_name="+nick_name;
+
+  	if(reply==""||nick_name==""){
+ 		alert("닉네임과 댓글을 둘 다 입력해 주세요~!");
+ 	}else{
+	 	/* 	var data = JSON.stringify({
+			"id" : id,
+			"reply" : reply,
+		}); */
+		
+		$.ajax({
+			type : "GET",
+			dataType : "json",
+			contentType : "application/json; charset=utf-8",
+	/* 		data : data, */
+			url : url,
+			success : function(res){
+				alert("dddd");
+			},
+			error : function(e){
+				alert("ERROR!(reply) : " + e);
+			}
+		}) 
+ 		
+ 	} 
+ 	
 	
 }
 
