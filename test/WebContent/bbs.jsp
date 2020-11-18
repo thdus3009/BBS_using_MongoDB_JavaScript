@@ -1,6 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8"%>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+	pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
@@ -11,127 +11,139 @@
 <script src="${pageContext.request.contextPath}/resource/js/jquery.js"></script>
 
 
-<link href="${pageContext.request.contextPath}/resource/css/bbs.css" rel="stylesheet">
-<link  href="${pageContext.request.contextPath}/resource/css/bootstrap.css" rel="stylesheet">
-<link  href="${pageContext.request.contextPath}/resource/css/custom.css" rel="stylesheet">
+<link href="${pageContext.request.contextPath}/resource/css/bbs.css"
+	rel="stylesheet">
+<link
+	href="${pageContext.request.contextPath}/resource/css/bootstrap.css"
+	rel="stylesheet">
+<link href="${pageContext.request.contextPath}/resource/css/custom.css"
+	rel="stylesheet">
 
 <!-- dropzone.js -->
-<script src="${pageContext.request.contextPath}/resource/dropzone/dropzone.js"></script>
-<link rel="stylesheet" href="${pageContext.request.contextPath}/resource/dropzone/dropzone.min.css" />
+<script
+	src="${pageContext.request.contextPath}/resource/dropzone/dropzone.js"></script>
+<link rel="stylesheet"
+	href="${pageContext.request.contextPath}/resource/dropzone/dropzone.min.css" />
 
 
 <style type="text/css">
-ul.mylist li{
+ul.mylist li {
 	list-style: none;
-    margin: 0px;
-    padding: 0px;
-    max-width: 80%;
-    width: 100%;
-    padding: 5px 0px 5px 5px;
-    margin-bottom: 5px;
-    border-bottom: 1px solid black;
-    font-size: 12px;
+	margin: 0px;
+	padding: 0px;
+	max-width: 80%;
+	width: 100%;
+	padding: 5px 0px 5px 5px;
+	margin-bottom: 5px;
+	border-bottom: 1px solid black;
+	font-size: 12px;
 }
 </style>
 </head>
 <body>
 
 
-<div class="cscenter">
-	<div class="sub_visual">
-		<img alt="dd_img" src="<%=request.getContextPath()%>/img/sub_visual_cscenter.jpg" width="100%" height="100%" >
-		<p class="img_txt">안녕하세요 고객님.<br>갤러리360 고객센터 입니다.</p>
-	</div>
-	
-	<div class="sub_wrap"><!-- css때문에 잡아놓은 div -->
-		<h2>공지 게시판</h2>
-		
-		<!------------------ 원페이지 작동 구간 (목록) ----------------------->
-		<div id="one_page_bbs">
-			
-			<div class="notice1">
-				<table class="table-striped" style="text-align:center; border:1px solid #dddddd; width: 100%;">
-					<thead>
-						<tr>
-							<th class="th_title">title</th>
-							<th class="th_date">date</th>
-						</tr>
-					</thead>
-					<tbody class="paginated">
-						<!-- loadAll.mon 자바스크립트 -->
-					</tbody>
-				</table>
-			</div>
-			
-			<br>
-			<div onclick="write11()" class="btn">글쓰기</div>
-			<!-- <a href="write.jsp" class="btn">글쓰기</a> -->
-		
-			<!-- 페이지 -->
-			<div id="paging">
-			
-			</div>		
-		
+	<div class="cscenter">
+		<div class="sub_visual">
+			<img alt="dd_img"
+				src="<%=request.getContextPath()%>/img/sub_visual_cscenter.jpg"
+				width="100%" height="100%">
+			<p class="img_txt">
+				안녕하세요 고객님.<br>갤러리360 고객센터 입니다.
+			</p>
 		</div>
-		
-		<!------------------------ 선택한 글보기 -------------------------->
-		<div id="one_page_view">
-			<div class="notice2">
-				<!-- //내용출력 -->
-			</div>
-			
-			<br>
-			<a href="/" class="btn">목록</a>
-			<div onclick="delete11()" class="btn">삭제</div>
-			<div onclick="update11()" class="btn">수정</div>
-		</div>
-		
-		
-		<!------------------------ 글쓰기 --------------------------------->
-		<div id="one_page_write">			
-			<div class="notice3">
+
+		<div class="sub_wrap">
+			<!-- css때문에 잡아놓은 div -->
+			<h2>공지 게시판</h2>
+
+			<!------------------ 원페이지 작동 구간 (목록) ----------------------->
+			<div id="one_page_bbs">
+
+				<div class="notice1">
+					<table class="table-striped"
+						style="text-align: center; border: 1px solid #dddddd; width: 100%;">
+						<thead>
+							<tr>
+								<th class="th_title">title</th>
+								<th class="th_date">date</th>
+							</tr>
+						</thead>
+						<tbody class="paginated">
+							<!-- loadAll.mon 자바스크립트 -->
+						</tbody>
+					</table>
+				</div>
+
 				<br>
-				제목 : <input type="text" name="title" id="title">
-				<br><br>
-				내용 : <textarea rows="5" cols="22" name="contents" id="contents"></textarea>
-				<!-- <input type="submit" value="저장"> -->
-				<br><br>
-				파일 업로드 :	<form action="${pageContext.request.contextPath}/test" method="post" enctype="multipart/form-data"
-				class="dropzone" id="myDropzone" style="width: 93%;" name="file1"></form> 
-				<!-- <div class="dropzone" id="myDropzone" style="width: 93%;" name="file1"></div> -->
-				<br><br>
-				<button onclick="write_save()" id="submit-all">저장</button>
+				<div onclick="write11()" class="btn">글쓰기</div>
+				<!-- <a href="write.jsp" class="btn">글쓰기</a> -->
+
+				<!-- 페이지 -->
+				<div id="paging"></div>
+
 			</div>
-			
-			<a href="/" class="btn">목록</a>
-		</div>
-		
-		
-		<!------------------------ 수정 --------------------------------->
-		<div id="one_page_update">
-			<div class="notice4">
-				<br>
-				제목 : <input type="text" id="up_title">
-				<br><br>
-				날짜 : <input type="text" id="up_date" readonly="readonly">
-				<br><br>
-				내용 : <textarea rows="5" cols="22" id="up_contents"></textarea>
-				<!-- <input type="submit" value="저장"> -->
-				<br><br>
-				<button onclick="update_save()" >저장</button>
-			
+
+			<!------------------------ 선택한 글보기 -------------------------->
+			<div id="one_page_view">
+				<div class="notice2">
+					<!-- //내용출력 -->
+				</div>
+
+				<br> <a href="/" class="btn">목록</a>
+				<div onclick="delete11()" class="btn">삭제</div>
+				<div onclick="update11()" class="btn">수정</div>
 			</div>
-			
-			<a href="/" class="btn">목록</a>
+
+
+			<!------------------------ 글쓰기 --------------------------------->
+			<div id="one_page_write">
+				<div class="notice3">
+					<br> 제목 : <input type="text" name="title" id="title">
+					<br>
+					<br> 내용 :
+					<textarea rows="5" cols="22" name="contents" id="contents"></textarea>
+					<!-- <input type="submit" value="저장"> -->
+					<br>
+					<br> 파일 업로드 :
+					<form action="${pageContext.request.contextPath}/test"
+						method="post" enctype="multipart/form-data" class="dropzone"
+						id="myDropzone" style="width: 93%;" name="file1"></form>
+					<!-- <div class="dropzone" id="myDropzone" style="width: 93%;" name="file1"></div> -->
+					<br>
+					<br>
+					<button onclick="write_save(myDropzone.files.length)" id="submit-all">저장</button>
+				</div>
+
+				<a href="/" class="btn">목록</a>
+			</div>
+
+
+			<!------------------------ 수정 --------------------------------->
+			<div id="one_page_update">
+				<div class="notice4">
+					<br> 제목 : <input type="text" id="up_title"> <br>
+					<br> 날짜 : <input type="text" id="up_date" readonly="readonly">
+					<br>
+					<br> 내용 :
+					<textarea rows="5" cols="22" id="up_contents"></textarea>
+					<!-- <input type="submit" value="저장"> -->
+					<br>
+					<br>
+					<button onclick="update_save()">저장</button>
+
+				</div>
+
+				<a href="/" class="btn">목록</a>
+			</div>
+
 		</div>
+
 
 	</div>
 
-
-</div>
-
-<!-- jquery.js와 동시에 실행이 되서 아래로 빼놓았음-->
-<script type="text/javascript">
+	<!-- jquery.js와 동시에 실행이 되서 아래로 빼놓았음-->
+	<script type="text/javascript">
 
 	var curPage = 1; //현재페이지 (현재위치 : 3페이지)
 	var perPage = 10; //한페이지당 출력할 글 갯수(1페이지10개)
@@ -565,86 +577,99 @@ function write11(){
 	         //       myDropzone.processQueue(); 
 
 	         ///   });
+	            
+	      	    //정보 넘김을 전부 완료했을때
 	            this.on("queuecomplete", function (file) {
-	                alert("All files have uploaded ");
+	                alert("모든 파일 업로드 완료!");
+	              	location.href = "/";
 	           });
 	            
-	            //정보 넘김을 전부 완료했을때
-	            this.on("complete",function(file){
-	            	alert("파일 업로드_complete");
-	            	//location.href = "/";
-	            }); 
-	            //파일 보낼때 (제목,내용 보내지는게 문제가 아니고 일단 파일이 저장되고 불러와지는지가 중요)
-	            this.on("sending",function(data, xhr, formData){ 
+	      
+	            //파일 보낼때 (파일을 보내야지 이게 작동된다.)
+ 	            this.on("sending",function(data, xhr, formData){ 
 	            	//debugger;
-	            	debugger;
 	            	formData.append("title", $("#title").val());
 	            	formData.append("contents", $("#contents").val());
-	            });
-	            //정보 하나씩넘길때마다 작동
-	            this.on("success",function(file, response){
+	            }); 
+	            
+	            
+	            //정보 하나씩넘길때마다 작동 (success, complete 둘 다 비슷한 기능)
+/*	            this.on("success",function(file, response){
 	            	alert("파일 업로드_success");
 	            	//debugger;
 	            });
+	            
+ 	            this.on("complete",function(file){
+	            	alert("파일 업로드_complete");	            	
+	            });  */
 
 	        }
 
 
 	}; 
 
-	function write_save(){
-		myDropzone.processQueue(); 
+/*   	function write_save(aa){
+ 		
+  		console.log(aa);
+ 		
+ 		//myDropzone.processQueue(); 
 		//location.reload();
-	}
-
-/* 	function write_save(){
-
-		myDropzone.processQueue(); 
-//		return false;
-
-    var title = $("#title").val();
-	var content = $("#contents").val();
+	}   
+ */
+	function write_save(file){
 	
-	//alert(title+" "+content);
+			if(file!=0){
+				
+				myDropzone.processQueue(); 	
+				//return false;
 	
-	var url = "/insert.mon";
-	
-	console.log("aa: "+title);
-	
-	if(title==""||content==""){
-		alert("제목과 내용을 입력해 주세요.");
-	}else{
-
-		//post타입일 경우 사용 (json 타입으로 바꾸기)
-		var data = JSON.stringify({
-			"title" : title,
-			"content" : content
-		});
-		
-		$.ajax({
-			type : "POST",
-			dataType : "json",
-			contentType : "application/json; charset=utf-8",
-			data : data,
-			url : url,
-			success : function(res){
-				//debugger;
-				if (res.result == "OK"){
-					alert("정상적으로 저장되었습니다.");
-					location.href = "/";
+			}else{
+				
+			    var title = $("#title").val();
+				var content = $("#contents").val();
+				
+				//alert(title+" "+content);
+				
+				var url = "/insert.mon";
+				
+				console.log("aa: "+title);
+				
+				if(title==""||content==""){
+					alert("제목과 내용을 입력해 주세요.");
 				}else{
-					alert("저장 에러");
+			
+					//post타입일 경우 사용 (json 타입으로 바꾸기)
+					var data = JSON.stringify({
+						"title" : title,
+						"content" : content
+					});
+					
+					$.ajax({
+						type : "POST",
+						dataType : "json",
+						contentType : "application/json; charset=utf-8",
+						data : data,
+						url : url,
+						success : function(res){
+							//debugger;
+							if (res.result == "OK"){
+								alert("글쓰기 저장 완료");
+								location.href = "/";
+							}else{
+								alert("저장 에러");
+							}
+						},
+						error : function(e){
+							alert("ERROR!(write) : " + e);
+						}
+					})
+					
 				}
-			},
-			error : function(e){
-				alert("ERROR!(write) : " + e);
+				
 			}
-		})
-		
-	}
-
 	
-}      */
+		
+	}    
 
 
 
