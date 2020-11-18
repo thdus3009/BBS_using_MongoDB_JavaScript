@@ -616,6 +616,7 @@ function write11(){
 		//location.reload();
 	}   
  */
+ 
 	function write_save(file){
 	
 			if(file!=0){
