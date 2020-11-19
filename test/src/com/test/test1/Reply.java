@@ -71,16 +71,24 @@ public class Reply extends HttpServlet{
 		query.put("_id", new ObjectId(id));
 		
 		//"배열" > "nick_name,reply", "nick_name,reply", s"nick_name,reply"...
-		List<BasicDBObject> list = new ArrayList<>();
-		list.add(new BasicDBObject(nick_name,reply));
+		//db.test.update({"title":"wwww"}, {$push: {"reply": ["내용","두개이상"] }});
 		
-/*		BasicDBObject rdata = new BasicDBObject();
-		rdata.put("reply", reply);*/
+		DBObject rdata = new BasicDBObject("reply",new BasicDBObject("nick_name",nick_name).append("reply_contents",reply));
 		
-		BasicDBObject se = new BasicDBObject();
-		se.put("$set", list);
+		DBObject se = new BasicDBObject("$push", rdata);
 		
 		coll.update(query, se);
+		
+/*		List<BasicDBObject> list = new ArrayList<>();
+		list.add(new BasicDBObject(nick_name,reply));
+		
+		BasicDBObject rdata = new BasicDBObject();
+		rdata.put("reply",list);
+		
+		BasicDBObject se = new BasicDBObject();
+		se.put("$push", rdata);
+		
+		coll.update(query, se);*/
 		
 		
 		

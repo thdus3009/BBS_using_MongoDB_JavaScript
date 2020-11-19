@@ -100,7 +100,6 @@ ul.mylist li {
 					<!-- 댓글쓰기  -->
 					<br>
 					<div>
-						등록 / 나중에...ㅎㅎ
 						<div class="reply1"></div>
 					</div>
 					
@@ -424,7 +423,47 @@ function open11(id){
 			$(".reply1").html(html2);
 			
 			/* ---------------------------댓글 출력--------------------------------- */
-			var html3 = "";
+			
+			if(res.reply!=null){
+/* 				console.log(res.reply.length);
+	  			var reply1 = res.reply[0].nick_name;
+				var reply2 = res.reply[1];
+				console.log(reply1);
+				console.log(reply2);   */
+				
+				var html3 = "";
+	
+			    html3 += "<table class=\"table-striped\" style=\" border: 1px solid #dddddd; width: 100%;\">";
+			    html3 += "<thead>";
+			    html3 += "<tr>";
+			    html3 += "<th class=\"th_nick\">+닉네임+</th>";
+			    html3 += "<th class=\"th_comment\">+comment+</th>";
+			    html3 += "</tr>";
+			    html3 += "</thead>";
+			    
+			    html3 += "<tbody>";	
+			    
+			    for(var i=(res.reply.length-1); i>=0; i--){
+			    	var reply = res.reply[i];
+			    	var reply1 = reply.nick_name;
+			    	var reply2 = reply.reply_contents;			    
+			    	
+/* 			    	var reply1 = res.reply[i].nick_name.toString();
+					var reply2 = res.reply[i].reply_contents.toString();  */	
+				    html3 += "<tr>";
+				    html3 += "<td>"+reply1+"</td>";
+				    html3 += "<td>"+reply2+"</td>";
+				    html3 += "<td><button onclick=\"reply_update('"+id+"')\">수정</button>&emsp;";
+				    html3 += "<button onclick=\"reply_delete()\">삭제</button></td>";
+				    html3 += "</tr>";	    			    	
+			    	
+			    }
+			    
+				html3 += "</tbody>";
+			    html3 += "</table>";
+			    
+			    $(".reply2").html(html3);
+			}
 			
 			
 		},
@@ -460,6 +499,7 @@ function reply_save(){
 			url : url,
 			success : function(res){
 				alert("dddd");
+				//현재위치 유지  (location.href="/" > X)
 			},
 			error : function(e){
 				alert("ERROR!(reply) : " + e);
@@ -467,8 +507,17 @@ function reply_save(){
 		}) 
  		
  	} 
- 	
 	
+}
+
+function reply_delete(){
+	
+}
+
+function reply_update(id){
+	console.log(id);
+/* 	console.log(reply1);
+	console.log(reply2); */
 }
 
 //파일 다운로드
