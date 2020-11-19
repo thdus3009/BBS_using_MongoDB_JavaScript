@@ -15,75 +15,31 @@
 </head>
 <body>
 
-<!-- only 파일 -->
+<a href="#contents">개밥바라기별로 이동</a>
 
- <h2>dropzone 테스트</h2>
+<h2 >달콤한 나의 도시</h2><br>
 
-    <div class="dropzone-area">
-
-        <form name="fname">
-            <label for="fld">필드</label>
-            <div class="dropzone" id="myDropzone"></div>
-            <button id="btn-upload-file">서버전송</button>
-        </form>
-
-    </div>
+  모든 고백은 이기적이다. 사람들이 누군가에게 고백을 할 때, 그에게 진심을 알리고 싶다는 갈망보다 제 마음의 짐을 덜고 싶다는 욕망이 더 클지도 모른다. (106쪽)<br>
 
 
-    <script>
 
-        //fileDropzone dropzone 설정할 태그의 id로 지정
-        Dropzone.options.myDropzone = {
+  "남자나 여자나 사랑에 빠지는 이유는 비슷할 것 같아. 연애란 게 결국엔 이 거친 세상에서 마음 붙일 데를 찾는 거 아니겠어? 체온을 나누고 싶고, 기대고 싶고, 소통하고 싶고." (110쪽)<br>
 
-        url: '/test.mon',          //업로드할 url (ex)컨트롤러)
-        init: function () {
-            /* 최초 dropzone 설정시 init을 통해 호출 */
-            var submitButton = document.querySelector("#btn-upload-file");
-            var myDropzone = this; //closure
 
-            submitButton.addEventListener("click", function () {
-                
-                console.log("업로드");
-                //tell Dropzone to process all queued files
-                myDropzone.processQueue(); 
 
-            });
-            
-/*             //기존에 업로드된 서버파일이 있는 경우,
-            $.ajax({
-                url: 'upload.php',
-                type: 'post',
-                data: {request: 2},
-                dataType: 'json',
-                success: function(response){
+  어떤 순간, 인간이라는 존재는 무섭도록 이기적일 뿐더러 자기가 이기적이라는 사실 조차 알지 못한다. (215쪽)<br>
 
-                    $.each(response, function(key,value) {
-                        var mockFile = { name: value.name, size: value.size };
+  
 
-                        myDropzone.emit("addedfile", mockFile);
-                        myDropzone.emit("thumbnail", mockFile, value.path);
-                        myDropzone.emit("complete", mockFile);
+  우리는 왜 타인의 문제에 대해서는 날카롭게 판단하고 냉정하게 충고하면서 자기 인생의 문제 앞에서는 갈피를 못잡고 헤매기만 하는 걸까. 객관적 거리 조정이 불가능한 건 스스로를 너무 사랑하기 때문인가,<br>
+   아니면 차마 두렵기 때문인가. (227쪽)<br>
 
-                    });
 
-                }
-            }); */
-
-        },
-        autoProcessQueue: false,    // 자동업로드 여부 (true일 경우, 바로 업로드 되어지며, false일 경우, 서버에는 올라가지 않은 상태임 processQueue() 호출시 올라간다.)
-        clickable: true,            // 클릭가능여부
-        thumbnailHeight: 90,        // Upload icon size
-        thumbnailWidth: 90,         // Upload icon size
-        maxFiles: 5,                // 업로드 파일수
-        maxFilesize: 10,            // 최대업로드용량 : 10MB
-        parallelUploads: 99,        // 동시파일업로드 수(이걸 지정한 수 만큼 여러파일을 한번에 컨트롤러에 넘긴다.)
-        addRemoveLinks: true,       // 삭제버튼 표시 여부
-        dictRemoveFile: '삭제',     // 삭제버튼 표시 텍스트
-        uploadMultiple: true,       // 다중업로드 기능
-
-        };
-
-    </script>
-
+<h2 id="contents">개밥바라기별</h2>
+  너희들 하고 싶은 대로 하라.<br>
+<br>
+  하고픈 일을 신나게 해내는 것이야말로 우리가 태어난 이유이기도 하다. <br>
+  하고 싶지 않은 일을 때려 치운다고 해서 너를 비난하는 어른들을 두려워하지 말라는 거다. <br>
+  그들은 네가 다른 어떤 일을 더 잘하게 될지 아직 모르기 때문이다.<br>
 </body>
 </html>

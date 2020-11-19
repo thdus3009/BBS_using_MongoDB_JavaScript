@@ -423,6 +423,8 @@ function open11(id){
 			$(".reply1").html(html2);
 			
 			/* ---------------------------댓글 출력--------------------------------- */
+			//이부분을 function으로 빼서 reply_save함수 안에 집어넣기
+			//jquery이용해서 정보들 사이에 넣기 //table > ul, li 태그로 리스트 만들기
 			
 			if(res.reply!=null){
 /* 				console.log(res.reply.length);
@@ -442,19 +444,17 @@ function open11(id){
 			    html3 += "</thead>";
 			    
 			    html3 += "<tbody>";	
-			    
+			    debugger;
 			    for(var i=(res.reply.length-1); i>=0; i--){
 			    	var reply = res.reply[i];
 			    	var reply1 = reply.nick_name;
 			    	var reply2 = reply.reply_contents;			    
 			    	
-/* 			    	var reply1 = res.reply[i].nick_name.toString();
-					var reply2 = res.reply[i].reply_contents.toString();  */	
 				    html3 += "<tr>";
 				    html3 += "<td>"+reply1+"</td>";
 				    html3 += "<td>"+reply2+"</td>";
-				    html3 += "<td><button onclick=\"reply_update('"+id+"')\">수정</button>&emsp;";
-				    html3 += "<button onclick=\"reply_delete()\">삭제</button></td>";
+				    html3 += "<td><button onclick=\"reply_update('"+id+"','"+i+"','"+reply1+"','"+reply2+"')\">수정</button>&emsp;";
+				    html3 += "<button onclick=\"reply_delete('"+id+"','"+i+"')\">삭제</button></td>";
 				    html3 += "</tr>";	    			    	
 			    	
 			    }
@@ -498,11 +498,15 @@ function reply_save(){
 	/* 		data : data, */
 			url : url,
 			success : function(res){
-				alert("dddd");
-				//현재위치 유지  (location.href="/" > X)
+				alert("reply_insert");
+				
+				$("#reply").val("");
+				$("#nick_name").val("");
+				
+				//현재위치 유지  (location.href="/" > X ) 댓글창만 새로고침
 			},
 			error : function(e){
-				alert("ERROR!(reply) : " + e);
+				alert("ERROR!(reply_insert) : " + e);
 			}
 		}) 
  		
@@ -510,14 +514,47 @@ function reply_save(){
 	
 }
 
-function reply_delete(){
+//댓글(reply) 삭제
+function reply_delete(id,index){
+	var result = confirm("정말로 댓글을 삭제하시겠습니까?");
 	
+	if(result){		
+		var url = "/reply_delete.rpl?id="+id+"&index="+index;
+		
+		$.ajax({
+			type : "GET",
+			contentType : "application/json; charset=utf-8", 
+			url : url,
+			success : function(res){
+				alert("reply_delete");
+				//현재위치 유지  (location.href="/" > X)
+			},
+			error : function(e){
+				alert("ERROR!(reply_delete) : " + e);
+			}
+		}) 
+	}
 }
 
-function reply_update(id){
-	console.log(id);
-/* 	console.log(reply1);
-	console.log(reply2); */
+//댓글(reply) 수정
+function reply_update(id,index,reply1,reply2){
+	
+	var url = "/reply_update.rpl";
+	//이건 포스트 타입으로 ?!
+			
+/* 	$.ajax({
+		type : "GET",
+		contentType : "application/json; charset=utf-8", 
+		url : url,
+		success : function(res){
+			alert("reply_update");
+			//현재위치 유지  (location.href="/" > X)
+		},
+		error : function(e){
+			alert("ERROR!(reply_update) : " + e);
+		}
+	})  */
+	
 }
 
 //파일 다운로드
