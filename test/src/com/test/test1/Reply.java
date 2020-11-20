@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.bson.types.ObjectId;
 
+import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -93,11 +94,18 @@ public class Reply extends HttpServlet{
 		
 		
 		//json형태로 success부분에 받고 싶은 정보 입력
-		JsonObject res = new JsonObject();
-		res.addProperty("result", "OK"); //json형태
+		JsonArray list = new JsonArray();
+
+		query.put("_id", new ObjectId(id));
+		
+		DBObject dboj = coll.findOne(query);
+		
+		out.println(dboj);
+/*		JsonObject res = new JsonObject();
+		res.addProperty("result", "OK"); //json형태 (res.result)
 		
 		//PrintWriter에 관련한 변수명 : out //서버에서 정보를 받고 내려오는 부분(String으로)
-		out.println(res.getAsJsonObject());
+		out.println(res.getAsJsonObject());*/
 	}
 	
 

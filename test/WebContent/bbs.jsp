@@ -421,51 +421,13 @@ function open11(id){
 			html2+= "댓글 : <input type=\"text\" name=\"reply\" id=\"reply\" style=\"width:90%;\">";
 			html2+= "&emsp; <button onclick=\"reply_save()\">등록</button>"
 			$(".reply1").html(html2);
+
+			var reply = new Array();
+			reply = res.reply;
+
+			reply_list(id,reply);
 			
-			/* ---------------------------댓글 출력--------------------------------- */
-			//이부분을 function으로 빼서 reply_save함수 안에 집어넣기
-			//jquery이용해서 정보들 사이에 넣기 //table > ul, li 태그로 리스트 만들기
-			
-			if(res.reply!=null){
-/* 				console.log(res.reply.length);
-	  			var reply1 = res.reply[0].nick_name;
-				var reply2 = res.reply[1];
-				console.log(reply1);
-				console.log(reply2);   */
-				
-				var html3 = "";
-	
-			    html3 += "<table class=\"table-striped\" style=\" border: 1px solid #dddddd; width: 100%;\">";
-			    html3 += "<thead>";
-			    html3 += "<tr>";
-			    html3 += "<th class=\"th_nick\">+닉네임+</th>";
-			    html3 += "<th class=\"th_comment\">+comment+</th>";
-			    html3 += "</tr>";
-			    html3 += "</thead>";
-			    
-			    html3 += "<tbody>";	
-			    debugger;
-			    for(var i=(res.reply.length-1); i>=0; i--){
-			    	var reply = res.reply[i];
-			    	var reply1 = reply.nick_name;
-			    	var reply2 = reply.reply_contents;			    
-			    	
-				    html3 += "<tr>";
-				    html3 += "<td>"+reply1+"</td>";
-				    html3 += "<td>"+reply2+"</td>";
-				    html3 += "<td><button onclick=\"reply_update('"+id+"','"+i+"','"+reply1+"','"+reply2+"')\">수정</button>&emsp;";
-				    html3 += "<button onclick=\"reply_delete('"+id+"','"+i+"')\">삭제</button></td>";
-				    html3 += "</tr>";	    			    	
-			    	
-			    }
-			    
-				html3 += "</tbody>";
-			    html3 += "</table>";
-			    
-			    $(".reply2").html(html3);
-			}
-			
-			
+
 		},
 		error: function(e){
 			alert("ERROR(view) : "+ e);
@@ -473,6 +435,50 @@ function open11(id){
 			
 	});
 	
+}
+
+function reply_list(id,reply){
+	/* ---------------------------댓글 출력--------------------------------- */
+	//이부분을 function으로 빼서 reply_save함수 안에 집어넣기
+	//jquery이용해서 정보들 사이에 넣기 //table > ul, li 태그로 리스트 만들기
+
+	if(reply!=null){
+		
+		var html3 = "";
+
+	    html3 += "<table class=\"table-striped\" style=\" border: 1px solid #dddddd; width: 100%;\">";
+	    html3 += "<thead>";
+	    html3 += "<tr>";
+	    html3 += "<th class=\"th_nick\">+닉네임+</th>";
+	    html3 += "<th class=\"th_comment\">+comment+</th>";
+	    html3 += "</tr>";
+	    html3 += "</thead>";
+	    
+	    html3 += "<tbody>";	
+	    
+	    for(var i=(reply.length-1); i>=0; i--){
+	    	
+	    	var reply = reply;
+	    	var reply1 = reply[i].nick_name;
+	    	var reply2 = reply[i].reply_contents;		
+
+		    html3 += "<tr>";
+		    html3 += "<td>"+reply1+"</td>";
+		    html3 += "<td>"+reply2+"</td>";
+		    html3 += "<td><button onclick=\"reply_update('"+id+"','"+i+"','"+reply1+"','"+reply2+"')\">수정</button>&emsp;";
+		    html3 += "<button onclick=\"reply_delete('"+id+"','"+i+"')\">삭제</button></td>";
+		    html3 += "</tr>";	 
+  
+	    }
+	    
+		html3 += "</tbody>";
+	    html3 += "</table>";
+	    
+	    //$("tr").eq(2).css({"color":"pink"});
+	    
+	    $(".reply2").html(html3);
+	    
+	} 
 }
 
 //댓글(reply) 저장 
@@ -497,11 +503,17 @@ function reply_save(){
 			contentType : "application/json; charset=utf-8",
 	/* 		data : data, */
 			url : url,
-			success : function(res){
-				alert("reply_insert");
+			success : function(dboj){
 				
+				//console.log("인덱스: "+$("tbody tr:last-of-type").index());
+
 				$("#reply").val("");
 				$("#nick_name").val("");
+				
+				var id = dboj._id.$oid.toString();
+				var reply = dboj.reply;
+				
+				reply_list(id,reply);
 				
 				//현재위치 유지  (location.href="/" > X ) 댓글창만 새로고침
 			},
