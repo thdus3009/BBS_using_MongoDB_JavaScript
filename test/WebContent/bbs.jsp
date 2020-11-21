@@ -441,7 +441,8 @@ function reply_list(id,reply){
 	/* ---------------------------댓글 출력--------------------------------- */
 	//이부분을 function으로 빼서 reply_save함수 안에 집어넣기
 	//jquery이용해서 정보들 사이에 넣기 //table > ul, li 태그로 리스트 만들기
-
+	console.log(reply);
+	
 	if(reply!=null){
 		
 		var html3 = "";
@@ -457,17 +458,72 @@ function reply_list(id,reply){
 	    html3 += "<tbody>";	
 	    
 	    for(var i=(reply.length-1); i>=0; i--){
-	    	
-	    	var reply = reply;
+
 	    	var reply1 = reply[i].nick_name;
 	    	var reply2 = reply[i].reply_contents;		
 
 		    html3 += "<tr>";
 		    html3 += "<td>"+reply1+"</td>";
 		    html3 += "<td>"+reply2+"</td>";
-		    html3 += "<td><button onclick=\"reply_update('"+id+"','"+i+"','"+reply1+"','"+reply2+"')\">수정</button>&emsp;";
+		    html3 += "<td><button onclick=\"reply_update1('"+id+"','"+i+"')\">수정</button>&emsp;";
 		    html3 += "<button onclick=\"reply_delete('"+id+"','"+i+"')\">삭제</button></td>";
 		    html3 += "</tr>";	 
+  
+	    }
+	    
+		html3 += "</tbody>";
+	    html3 += "</table>";
+	    
+	    //$("tr").eq(2).css({"color":"pink"});
+	    
+	    $(".reply2").html(html3);
+	    
+	} 
+}
+
+//수정(업데이트)용
+function reply_list2(id,index,reply){
+	/* ---------------------------댓글 출력--------------------------------- */
+	//이부분을 function으로 빼서 reply_save함수 안에 집어넣기
+	//jquery이용해서 정보들 사이에 넣기 //table > ul, li 태그로 리스트 만들기
+	console.log(reply);
+	
+	if(reply!=null){
+		
+		var html3 = "";
+
+	    html3 += "<table class=\"table-striped\" style=\" border: 1px solid #dddddd; width: 100%;\">";
+	    html3 += "<thead>";
+	    html3 += "<tr>";
+	    html3 += "<th class=\"th_nick\">+닉네임+</th>";
+	    html3 += "<th class=\"th_comment\">+comment+</th>";
+	    html3 += "</tr>";
+	    html3 += "</thead>";
+	    
+	    html3 += "<tbody>";	
+	    
+	    for(var i=(reply.length-1); i>=0; i--){
+	    	var reply = reply;
+	    	var reply1 = reply[i].nick_name;
+	    	var reply2 = reply[i].reply_contents;		
+
+	    	if(i==index){
+	    		html3 += "<tr>";
+			    html3 += "<td><input id=\"update_part1\" type=\"text\" value=\""+reply1+"\"></td>";
+			    html3 += "<td><input id=\"update_part2\" type=\"text\" value=\""+reply2+"\"></td>";
+			    html3 += "<td><button onclick=\"reply_update2('"+id+"','"+i+"')\">등록</button>&emsp;";
+			    html3 += "<button onclick=\"reply_update3('"+id+"')\">취소</button></td>";
+			    html3 += "</tr>";
+	    	}else{
+	    		html3 += "<tr>";
+			    html3 += "<td>"+reply1+"</td>";
+			    html3 += "<td>"+reply2+"</td>";
+			    html3 += "<td><button onclick=\"reply_update('"+id+"','"+i+"')\">수정</button>&emsp;";
+			    html3 += "<button onclick=\"reply_delete('"+id+"','"+i+"')\">삭제</button></td>";
+			    html3 += "</tr>";	
+	    	}
+
+		    	 
   
 	    }
 	    
@@ -513,6 +569,9 @@ function reply_save(){
 				var id = dboj._id.$oid.toString();
 				var reply = dboj.reply;
 				
+				console.log(id);
+				console.log(reply);
+				
 				reply_list(id,reply);
 				
 				//현재위치 유지  (location.href="/" > X ) 댓글창만 새로고침
@@ -535,11 +594,16 @@ function reply_delete(id,index){
 		
 		$.ajax({
 			type : "GET",
+			dataType : "json",
 			contentType : "application/json; charset=utf-8", 
 			url : url,
-			success : function(res){
-				alert("reply_delete");
-				//현재위치 유지  (location.href="/" > X)
+			success : function(dboj){
+				//dataType을 json이라고 해주어야 dboj에서 값을 key값으로 받아올 수 있다.
+				
+				var id = dboj._id.$oid.toString();
+				var reply = dboj.reply;
+
+				reply_list(id,reply);  
 			},
 			error : function(e){
 				alert("ERROR!(reply_delete) : " + e);
@@ -549,25 +613,88 @@ function reply_delete(id,index){
 }
 
 //댓글(reply) 수정
-function reply_update(id,index,reply1,reply2){
+function reply_update1(id,index){
+	//매개변수 전부 string 타입
 	
-	var url = "/reply_update.rpl";
-	//이건 포스트 타입으로 ?!
-			
-/* 	$.ajax({
-		type : "GET",
+	console.log(id);
+	console.log(index);
+
+	var url = "/reply_update1.rpl";
+	var data = JSON.stringify({
+		"id" : id
+	}) 	
+
+	$.ajax({
+		type : "POST",
+		dataType : "json",
+		data : data,
 		contentType : "application/json; charset=utf-8", 
 		url : url,
-		success : function(res){
-			alert("reply_update");
-			//현재위치 유지  (location.href="/" > X)
+		success : function(dboj){
+			var reply = dboj.reply;
+			reply_list2(id,index,reply);
 		},
 		error : function(e){
 			alert("ERROR!(reply_update) : " + e);
 		}
-	})  */
+	})
+
+}
+
+//수정 완료(등록)
+function reply_update2(id,index){
+	var reply1 = $('#update_part1').val();
+	var reply2 = $('#update_part2').val();
+	
+	var url = "/reply_update2.rpl";
+	var data = JSON.stringify({
+		"id" : id,
+		"index" : index,
+		"reply1" : reply1,
+		"reply2" : reply2
+	}) 	
+	
+	$.ajax({
+		type : "POST",
+		dataType : "json",
+		data : data,
+		contentType : "application/json; charset=utf-8", 
+		url : url,
+		success : function(dboj){
+			
+			var reply = dboj.reply;
+			reply_list(id,reply); 
+		},
+		error : function(e){
+			alert("ERROR!(reply_update) : " + e);
+		}
+	})
+}
+
+//수정 취소
+function reply_update3(id){
+	var url = "/reply_update3.rpl";
+	var data = JSON.stringify({
+		"id" : id
+	}) 	
+
+	$.ajax({
+		type : "POST",
+		dataType : "json",
+		data : data,
+		contentType : "application/json; charset=utf-8", 
+		url : url,
+		success : function(dboj){
+			var reply = dboj.reply;
+			reply_list(id,reply);
+		},
+		error : function(e){
+			alert("ERROR!(reply_update) : " + e);
+		}
+	})	
 	
 }
+
 
 //파일 다운로드
 function file_download(file_name){

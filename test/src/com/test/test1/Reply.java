@@ -94,13 +94,13 @@ public class Reply extends HttpServlet{
 		
 		
 		//json형태로 success부분에 받고 싶은 정보 입력
-		JsonArray list = new JsonArray();
 
 		query.put("_id", new ObjectId(id));
 		
 		DBObject dboj = coll.findOne(query);
 		
 		out.println(dboj);
+		
 /*		JsonObject res = new JsonObject();
 		res.addProperty("result", "OK"); //json형태 (res.result)
 		

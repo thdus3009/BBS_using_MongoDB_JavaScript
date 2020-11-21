@@ -9,12 +9,20 @@
 </head>
 <body>
 
+<input type="text" id="asd" value="테스트">
+<button onclick="reply()">등록</button>
+
 	<input type="text" id="id1"/>
 	<input type="file" id="file1"/>
 	<button onclick="aa()">클릭</button>
 
 
 <script type="text/javascript">
+
+	function reply(){
+		
+	}
+	
 	function aa() {
 		var id = $("#id1").val();
 		var file = $("#file1").val();

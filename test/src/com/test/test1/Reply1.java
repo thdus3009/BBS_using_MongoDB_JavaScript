@@ -1,6 +1,9 @@
 package com.test.test1;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.PrintWriter;
 
 import javax.servlet.ServletException;
@@ -10,13 +13,16 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.bson.types.ObjectId;
 
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DB;
 import com.mongodb.DBCollection;
 import com.mongodb.DBObject;
 import com.mongodb.MongoClient;
 import com.mongodb.WriteConcern;
+import com.mongodb.util.JSON;
 
 public class Reply1 extends HttpServlet{
 
@@ -89,18 +95,45 @@ public class Reply1 extends HttpServlet{
     		coll.update(query, se2);
     		
 
-    		JsonObject res = new JsonObject();
+    		
+    		query.put("_id", new ObjectId(id));
+    		
+    		DBObject dboj = coll.findOne(query);
+    		
+    		out.println(dboj);
+    		
+/*    		JsonObject res = new JsonObject();
     		res.addProperty("result", "OK"); //json형태
     		
-    		out.println(res.getAsJsonObject());
+    		out.println(res.getAsJsonObject());*/
         
     	//댓글 수정	
-        }else if(request.getRequestURI().endsWith("reply_update.rpl")){
+        }else if(request.getRequestURI().endsWith("reply_update1.rpl")){
+			String data = getBody(request); //받은 json > String
+			JsonParser parser = new JsonParser(); 
+			JsonElement xjson = parser.parse(data); //String > json		
+			JsonObject reg = xjson.getAsJsonObject(); //json > jsonObject
         	
-        	String id = "";
-        	String index = "";
-        	String nick_name = ""; //수정될 내용(닉네임)
-        	String reply_contents = ""; //수정될 내용(댓글 내용)
+			String id = reg.get("id").getAsString();
+			
+			BasicDBObject query = new BasicDBObject();
+			
+			query.put("_id", new ObjectId(id));			
+			DBObject dboj = coll.findOne(query);
+			
+			out.println(dboj);
+			
+        }else if(request.getRequestURI().endsWith("reply_update2.rpl")){
+        
+			String data = getBody(request); //받은 json > String
+			JsonParser parser = new JsonParser(); 
+			JsonElement xjson = parser.parse(data); //String > json		
+			JsonObject reg = xjson.getAsJsonObject(); //json > jsonObject
+			
+        	String id = reg.get("id").getAsString();
+        	String index = reg.get("index").getAsString();
+        	String nick_name = reg.get("reply1").getAsString(); //수정될 내용(닉네임)
+        	String reply_contents = reg.get("reply2").getAsString(); //수정될 내용(댓글 내용)
         	
         	//db.test.update({"_id" : ObjectId("5fb60806b0a63ff30c2a3565")}, {$set : {"reply.2" : { "nick_name" : "aabb", "reply_contents" : "aaabbbb" } }}) 
         	
@@ -121,12 +154,105 @@ public class Reply1 extends HttpServlet{
     		
     		coll.update(query, se);
     		
-    		JsonObject res = new JsonObject();
-    		res.addProperty("result", "OK"); //json형태 
+    		query.put("_id", new ObjectId(id));			
+			DBObject dboj = coll.findOne(query);
+			
+			out.println(dboj);
     		
-    		out.println(res.getAsJsonObject());
-    		
+        }else if(request.getRequestURI().endsWith("reply_update3.rpl")){
+			String data = getBody(request); //받은 json > String
+			JsonParser parser = new JsonParser(); 
+			JsonElement xjson = parser.parse(data); //String > json		
+			JsonObject reg = xjson.getAsJsonObject(); //json > jsonObject
+        	
+			String id = reg.get("id").getAsString();
+			
+			BasicDBObject query = new BasicDBObject();
+			
+			query.put("_id", new ObjectId(id));			
+			DBObject dboj = coll.findOne(query);
+			
+			out.println(dboj);
+			
         }
 		
 	}
+	
+	
+	
+	
+	//-----------------------------------------------------------------------------------
+	
+	
+	private DBObject JsonConvertDBObject(JsonObject doc){
+		Object o = JSON.parse(doc.toString());
+		DBObject oo = (DBObject) o;
+		return oo;
+	}
+	
+	
+	private JsonObject DBObjectConvertJsonObject(DBObject doc){
+		JsonParser jp = new JsonParser();
+		JsonElement je = jp.parse(doc.toString());
+		
+		return je.getAsJsonObject();
+	}
+	
+	
+	public static String getBody(HttpServletRequest request) throws IOException {
+		 
+        String body = null;
+        StringBuilder stringBuilder = new StringBuilder();
+        BufferedReader bufferedReader = null;
+ 
+        try {
+            InputStream inputStream = request.getInputStream();
+            if (inputStream != null) {
+                bufferedReader = new BufferedReader(new InputStreamReader(inputStream, "UTF-8"));
+                char[] charBuffer = new char[128];
+                int bytesRead = -1;
+                while ((bytesRead = bufferedReader.read(charBuffer)) > 0) {     	
+                	
+                	
+                    stringBuilder.append(charBuffer, 0, bytesRead);
+                  
+                }
+            }
+        } catch (IOException ex) {
+            throw ex;
+        } finally {
+            if (bufferedReader != null) {
+                try {
+                    bufferedReader.close();
+                } catch (IOException ex) {
+                    throw ex;
+                }
+            }
+        }
+ 
+        body = stringBuilder.toString();
+        body =  cleanXSS(body);    
+        return body;
+    }
+	
+	
+	private static String cleanXSS(String value) {      
+
+		  //You'll need to remove the spaces from the html entities below    
+		  
+		  value = value.replaceAll("<", "&lt;").replaceAll(">", "&gt;");         
+		  
+		  value = value.replaceAll("\\(", "&#40;").replaceAll("\\)", "&#41;");         
+		  
+		  value = value.replaceAll("'", "&#39;");        
+		  
+		  value = value.replaceAll("eval\\((.*)\\)", "");         
+		  
+		  value = value.replaceAll("[\\\"\\\'][\\s]*javascript:(.*)[\\\"\\\']", "\"\"");         
+		  
+		  value = value.replaceAll("script", "");         
+		  
+		  return value;     
+		  
+	} 
 }
