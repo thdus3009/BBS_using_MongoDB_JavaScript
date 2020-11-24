@@ -107,7 +107,7 @@ ul.mylist li {
 					<br>
 					<div>
 						&lt; 댓글 &gt; 
-						<br>댓글 출력, 댓글 삭제*수정 기능...(동록,수정,삭제하고 현재 페이지 유지 어떻게 하지? 주소값이 없잖아 ㅜㅜㅜ)	
+						<br>
 						
 						<div class="reply2"></div>					
 					</div>
@@ -437,6 +437,7 @@ function open11(id){
 	
 }
 
+//댓글
 function reply_list(id,reply){
 	/* ---------------------------댓글 출력--------------------------------- */
 	//이부분을 function으로 빼서 reply_save함수 안에 집어넣기
@@ -462,10 +463,10 @@ function reply_list(id,reply){
 	    	var reply1 = reply[i].nick_name;
 	    	var reply2 = reply[i].reply_contents;		
 
-		    html3 += "<tr>";
+		    html3 += "<tr class=\"c_"+i+"\">"; //c_1,c_2 ...
 		    html3 += "<td>"+reply1+"</td>";
 		    html3 += "<td>"+reply2+"</td>";
-		    html3 += "<td><button onclick=\"reply_update1('"+id+"','"+i+"')\">수정</button>&emsp;";
+		    html3 += "<td><button onclick=\"reply_update1('"+id+"','"+i+"','"+reply1+"','"+reply2+"')\">수정</button>&emsp;";
 		    html3 += "<button onclick=\"reply_delete('"+id+"','"+i+"')\">삭제</button></td>";
 		    html3 += "</tr>";	 
   
@@ -481,9 +482,9 @@ function reply_list(id,reply){
 	} 
 }
 
-//수정(업데이트)용
+/* //수정(업데이트)용
 function reply_list2(id,index,reply){
-	/* ---------------------------댓글 출력--------------------------------- */
+	
 	//이부분을 function으로 빼서 reply_save함수 안에 집어넣기
 	//jquery이용해서 정보들 사이에 넣기 //table > ul, li 태그로 리스트 만들기
 	console.log(reply);
@@ -535,7 +536,7 @@ function reply_list2(id,index,reply){
 	    $(".reply2").html(html3);
 	    
 	} 
-}
+} */
 
 //댓글(reply) 저장 
 function reply_save(){
@@ -613,10 +614,25 @@ function reply_delete(id,index){
 }
 
 //댓글(reply) 수정
-function reply_update1(id,index){
+function reply_update1(id,index,reply1,reply2){
 	//매개변수 전부 string 타입
+
+	//console.log($("input").hasClass("update_part1"));
+	if($("input").hasClass("update_part1")){
+		alert("이미 수정중인 댓글이 있습니다.")
+	}else{
+		var html3 = "";
+		html3 += "<td><input class=\"update_part1\" type=\"text\" value=\""+reply1+"\"></td>";
+	    html3 += "<td><input class=\"update_part2\" type=\"text\" value=\""+reply2+"\"></td>";
+	    html3 += "<td><button onclick=\"reply_update2('"+id+"','"+index+"')\">등록</button>&emsp;";
+	    html3 += "<button onclick=\"reply_update3('"+id+"','"+index+"','"+reply1+"','"+reply2+"')\">취소</button></td>";
+		
+	    $(".c_"+index).children().wrapAll("<div class=\"wr\"></div>");  //.replaceWith(html3);
+	    $(".wr").replaceWith(html3);
+	}
 	
-	console.log(id);
+	
+/* 	console.log(id);
 	console.log(index);
 
 	var url = "/reply_update1.rpl";
@@ -637,16 +653,16 @@ function reply_update1(id,index){
 		error : function(e){
 			alert("ERROR!(reply_update) : " + e);
 		}
-	})
+	}) */
 
 }
 
 //수정 완료(등록)
 function reply_update2(id,index){
-	var reply1 = $('#update_part1').val();
-	var reply2 = $('#update_part2').val();
+	var reply1 = $('.update_part1').val();
+	var reply2 = $('.update_part2').val();
 	
-	var url = "/reply_update2.rpl";
+	var url = "/reply_update.rpl";
 	var data = JSON.stringify({
 		"id" : id,
 		"index" : index,
@@ -672,8 +688,20 @@ function reply_update2(id,index){
 }
 
 //수정 취소
-function reply_update3(id){
-	var url = "/reply_update3.rpl";
+function reply_update3(id,index,reply1,reply2){
+	debugger;
+	var html3 = "";
+	html3 += "<td>"+reply1+"</td>";
+    html3 += "<td>"+reply2+"</td>";
+    html3 += "<td><button onclick=\"reply_update1('"+id+"','"+index+"','"+reply1+"','"+reply2+"')\">수정</button>&emsp;";
+    html3 += "<button onclick=\"reply_delete('"+id+"','"+index+"')\">삭제</button></td>";
+    
+    //$(".c_"+index).children().css("background-color","pink");
+	$(".c_"+index).children().wrapAll("<div class=\"wr\"></div>");  //.replaceWith(html3);
+    $(".wr").replaceWith(html3);
+    
+    
+	/* 	var url = "/reply_update3.rpl";
 	var data = JSON.stringify({
 		"id" : id
 	}) 	
@@ -691,7 +719,7 @@ function reply_update3(id){
 		error : function(e){
 			alert("ERROR!(reply_update) : " + e);
 		}
-	})	
+	})	 */
 	
 }
 

@@ -107,23 +107,8 @@ public class Reply1 extends HttpServlet{
     		
     		out.println(res.getAsJsonObject());*/
         
-    	//댓글 수정	
-        }else if(request.getRequestURI().endsWith("reply_update1.rpl")){
-			String data = getBody(request); //받은 json > String
-			JsonParser parser = new JsonParser(); 
-			JsonElement xjson = parser.parse(data); //String > json		
-			JsonObject reg = xjson.getAsJsonObject(); //json > jsonObject
-        	
-			String id = reg.get("id").getAsString();
-			
-			BasicDBObject query = new BasicDBObject();
-			
-			query.put("_id", new ObjectId(id));			
-			DBObject dboj = coll.findOne(query);
-			
-			out.println(dboj);
-			
-        }else if(request.getRequestURI().endsWith("reply_update2.rpl")){
+    	//댓글 수정		
+        }else if(request.getRequestURI().endsWith("reply_update.rpl")){
         
 			String data = getBody(request); //받은 json > String
 			JsonParser parser = new JsonParser(); 
@@ -159,21 +144,6 @@ public class Reply1 extends HttpServlet{
 			
 			out.println(dboj);
     		
-        }else if(request.getRequestURI().endsWith("reply_update3.rpl")){
-			String data = getBody(request); //받은 json > String
-			JsonParser parser = new JsonParser(); 
-			JsonElement xjson = parser.parse(data); //String > json		
-			JsonObject reg = xjson.getAsJsonObject(); //json > jsonObject
-        	
-			String id = reg.get("id").getAsString();
-			
-			BasicDBObject query = new BasicDBObject();
-			
-			query.put("_id", new ObjectId(id));			
-			DBObject dboj = coll.findOne(query);
-			
-			out.println(dboj);
-			
         }
 		
 	}
