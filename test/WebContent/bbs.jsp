@@ -322,7 +322,7 @@ function n_click(){ /* 다음 */
 
 		
 		//만일 새로고침한 상태라 curPage가 null이라면 1적용
-/*  		console.log(" ");
+/*  	console.log(" ");
 		console.log("현재 누른 페이지: "+curPage);
 		console.log("시작번호: "+startRow);
 		console.log("끝번호: "+lastRow);
@@ -604,7 +604,8 @@ function reply_delete(id,index){
 				var id = dboj._id.$oid.toString();
 				var reply = dboj.reply;
 
-				reply_list(id,reply);  
+				$(".c_"+index+">td").remove();
+				//reply_list(id,reply);  
 			},
 			error : function(e){
 				alert("ERROR!(reply_delete) : " + e);

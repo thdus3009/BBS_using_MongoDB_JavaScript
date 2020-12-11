@@ -58,7 +58,7 @@ public class FileUpload extends HttpServlet{
 		response.setCharacterEncoding("UTF-8"); 
 		response.setContentType("text/html; charset=UTF-8");
 				
-		SAVE_DIR = "C:/File_Attached";
+		SAVE_DIR = "C:/file/File_Attached";
 
 		/////////////////////////////////////////////////////////////////////////////////////////////////
 		PrintWriter out = response.getWriter();
