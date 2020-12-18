@@ -30,8 +30,6 @@ import com.mongodb.DBCollection;
 import com.mongodb.DBObject;
 import com.mongodb.MongoClient;
 import com.mongodb.WriteConcern;
-import com.sun.javafx.scene.web.Debugger;
-import com.sun.org.apache.xml.internal.resolver.helpers.Debug;
 
 @WebServlet("/FileUpload.gu")
 //어노테이션 설정하면 web.xml 작성을 생략할 수 있다.
